@@ -1,0 +1,667 @@
+$date
+    Mar 29, 2019  01:59:59
+$end
+$version
+    TOOL:	ncsim(64)	15.20-s051
+$end
+$timescale
+    1 ns
+$end
+
+$scope module tb_execute_stage $end
+$var reg      32 !    pc [31:0] $end
+$var reg      32 "    op1 [31:0] $end
+$var reg      32 #    op2 [31:0] $end
+$var reg       1 $    pipeline_flush  $end
+$var reg      32 %    immediate [31:0] $end
+$var reg       7 &    func7 [6:0] $end
+$var reg       3 '    func3 [2:0] $end
+$var reg       7 (    opcode [6:0] $end
+$var reg       1 )    ex_alu_src  $end
+$var reg       1 *    predictedTaken  $end
+$var reg       1 +    invalid_inst  $end
+$var reg       1 ,    ex_wb_reg_file  $end
+$var reg       5 -    alu_rd [4:0] $end
+$var reg       2 .    operand_a_forward_cntl [1:0] $end
+$var reg       2 /    operand_b_forward_cntl [1:0] $end
+$var reg      32 0    data_forward_mem [31:0] $end
+$var reg      32 1    data_forward_wb [31:0] $end
+$var wire     32 2    result_alu [31:0] $end
+$var wire     32 3    op1_selected [31:0] $end
+$var wire     32 4    op2_selected [31:0] $end
+$var wire     32 5    pc_jump_addr [31:0] $end
+$var wire      1 6    jump_en  $end
+$var wire      1 7    update_btb  $end
+$var wire     32 8    calc_jump_addr [31:0] $end
+$var wire      5 9    wb_rd [4:0] $end
+$var wire      1 :    wb_reg_file  $end
+$var integer  32 ;    pass_count  $end
+$var integer  32 <    fail_count  $end
+$var reg       1 =    clk  $end
+$var parameter  7 >    OPCODE_RTYPE  $end
+$var parameter  7 ?    OPCODE_ITYPE  $end
+$var parameter  7 @    OPCODE_JTYPE  $end
+$var parameter  7 A    FUNC7_ADD  $end
+$var parameter  3 B    FUNC3_ADD  $end
+$var parameter  2 C    FORWARD_NONE  $end
+$var parameter  2 D    FORWARD_MEM  $end
+$var parameter  2 E    FORWARD_WB  $end
+
+$scope module dut $end
+$var wire     32 F    pc [31:0] $end
+$var wire     32 G    op1 [31:0] $end
+$var wire     32 H    op2 [31:0] $end
+$var wire      1 I    pipeline_flush  $end
+$var wire     32 J    immediate [31:0] $end
+$var wire      7 K    func7 [6:0] $end
+$var wire      3 L    func3 [2:0] $end
+$var wire      7 M    opcode [6:0] $end
+$var wire      1 N    ex_alu_src  $end
+$var wire      1 O    predictedTaken  $end
+$var wire      1 P    invalid_inst  $end
+$var wire      1 Q    ex_wb_reg_file  $end
+$var wire      5 R    alu_rd [4:0] $end
+$var wire      2 S    operand_a_forward_cntl [1:0] $end
+$var wire      2 T    operand_b_forward_cntl [1:0] $end
+$var wire     32 U    data_forward_mem [31:0] $end
+$var wire     32 V    data_forward_wb [31:0] $end
+$var wire     32 2    result_alu [31:0] $end
+$var wire     32 3    op1_selected [31:0] $end
+$var wire     32 4    op2_selected [31:0] $end
+$var wire     32 5    pc_jump_addr [31:0] $end
+$var wire      1 6    jump_en  $end
+$var wire      1 7    update_btb  $end
+$var wire     32 8    calc_jump_addr [31:0] $end
+$var wire      5 9    wb_rd [4:0] $end
+$var wire      1 :    wb_reg_file  $end
+$var reg      32 W    op1_forwarded [31:0] $end
+$var reg      32 X    op2_forwarded [31:0] $end
+$var reg      32 Y    op1_alu [31:0] $end
+$var reg      32 Z    op2_alu [31:0] $end
+$var wire     32 [    alu_result [31:0] $end
+$var wire     32 \    op1_valid [31:0] $end
+$var wire     32 ]    op2_valid [31:0] $end
+$var wire      1 ^    zero_flag  $end
+$var wire      1 _    carry_flag  $end
+$var wire      1 `    negative_flag  $end
+$var wire      1 a    overflow_flag  $end
+$var wire      1 b    imm  $end
+
+$scope module pc_jump_inst $end
+$var wire     32 F    pc [31:0] $end
+$var wire     32 J    immediate [31:0] $end
+$var wire     32 c    op1 [31:0] $end
+$var wire      7 M    opcode [6:0] $end
+$var wire      3 L    func3 [2:0] $end
+$var wire      1 _    carry_flag  $end
+$var wire      1 ^    zero_flag  $end
+$var wire      1 `    negative_flag  $end
+$var wire      1 a    overflow_flag  $end
+$var wire      1 O    predictedTaken  $end
+$var wire     32 5    update_pc [31:0] $end
+$var wire     32 8    jump_addr [31:0] $end
+$var wire      1 6    modify_pc  $end
+$var wire      1 7    update_btb  $end
+$var wire     32 d    input_a [31:0] $end
+$var wire     32 e    adder_out [31:0] $end
+$var wire     32 f    pc_inc [31:0] $end
+$var wire      1 g    jump_inst  $end
+$var wire      1 h    branch_inst  $end
+$var wire      1 i    jalr_inst  $end
+$var wire      1 j    branch_taken  $end
+$var wire      1 k    jump_en  $end
+$var wire      1 l    beq  $end
+$var wire      1 m    bne  $end
+$var wire      1 n    blt  $end
+$var wire      1 o    bge  $end
+$var wire      1 p    bltu  $end
+$var wire      1 q    bgeu  $end
+$upscope $end
+
+
+$scope module alu_top_inst $end
+$var wire     32 G    op1 [31:0] $end
+$var wire     32 H    op2 [31:0] $end
+$var wire      1 r    imm [31] $end
+$var wire      1 s    imm [30] $end
+$var wire      1 t    imm [29] $end
+$var wire      1 u    imm [28] $end
+$var wire      1 v    imm [27] $end
+$var wire      1 w    imm [26] $end
+$var wire      1 x    imm [25] $end
+$var wire      1 y    imm [24] $end
+$var wire      1 z    imm [23] $end
+$var wire      1 {    imm [22] $end
+$var wire      1 |    imm [21] $end
+$var wire      1 }    imm [20] $end
+$var wire      1 ~    imm [19] $end
+$var wire      1 !!   imm [18] $end
+$var wire      1 "!   imm [17] $end
+$var wire      1 #!   imm [16] $end
+$var wire      1 $!   imm [15] $end
+$var wire      1 %!   imm [14] $end
+$var wire      1 &!   imm [13] $end
+$var wire      1 '!   imm [12] $end
+$var wire      1 (!   imm [11] $end
+$var wire      1 )!   imm [10] $end
+$var wire      1 *!   imm [9] $end
+$var wire      1 +!   imm [8] $end
+$var wire      1 ,!   imm [7] $end
+$var wire      1 -!   imm [6] $end
+$var wire      1 .!   imm [5] $end
+$var wire      1 /!   imm [4] $end
+$var wire      1 0!   imm [3] $end
+$var wire      1 1!   imm [2] $end
+$var wire      1 2!   imm [1] $end
+$var wire      1 b    imm [0] $end
+$var wire      7 M    opcode [6:0] $end
+$var wire      3 L    func3 [2:0] $end
+$var wire      7 K    func7 [6:0] $end
+$var reg      32 3!   result_alu [31:0] $end
+$var wire      1 _    carry_flag  $end
+$var wire      1 `    zero_flag  $end
+$var wire      1 `    negative_flag  $end
+$var wire      1 a    overflow_flag  $end
+$var wire      1 4!   is_sub  $end
+$var wire     32 5!   add_res [31:0] $end
+$var wire     32 6!   shift_res [31:0] $end
+$var wire     32 7!   logic_res [31:0] $end
+$var wire     32 8!   comp_res [31:0] $end
+
+$scope module ADD_UNIT $end
+$var wire     32 G    op1 [31:0] $end
+$var wire     32 H    op2 [31:0] $end
+$var wire      1 4!   sub  $end
+$var wire     32 5!   result_alu [31:0] $end
+$var wire      1 _    carry_flag  $end
+$var wire      1 `    zero_flag  $end
+$var wire      1 `    negative_flag  $end
+$var wire      1 a    overflow_flag  $end
+$var wire     32 9!   op2_in [31:0] $end
+$var wire      1 :!   cin_in  $end
+$var reg      32 ;!   s [31:0] $end
+$var reg      33 <!   c [32:0] $end
+$var integer  32 =!   i  $end
+$upscope $end
+
+
+$scope module SHIFT_UNIT $end
+$var wire     32 G    op1 [31:0] $end
+$var wire     32 H    op2 [31:0] $end
+$var wire      7 M    opcode [6:0] $end
+$var wire      3 L    func3 [2:0] $end
+$var wire      7 K    func7 [6:0] $end
+$var wire      1 r    imm [31] $end
+$var wire      1 s    imm [30] $end
+$var wire      1 t    imm [29] $end
+$var wire      1 u    imm [28] $end
+$var wire      1 v    imm [27] $end
+$var wire      1 w    imm [26] $end
+$var wire      1 x    imm [25] $end
+$var wire      1 y    imm [24] $end
+$var wire      1 z    imm [23] $end
+$var wire      1 {    imm [22] $end
+$var wire      1 |    imm [21] $end
+$var wire      1 }    imm [20] $end
+$var wire      1 ~    imm [19] $end
+$var wire      1 !!   imm [18] $end
+$var wire      1 "!   imm [17] $end
+$var wire      1 #!   imm [16] $end
+$var wire      1 $!   imm [15] $end
+$var wire      1 %!   imm [14] $end
+$var wire      1 &!   imm [13] $end
+$var wire      1 '!   imm [12] $end
+$var wire      1 (!   imm [11] $end
+$var wire      1 )!   imm [10] $end
+$var wire      1 *!   imm [9] $end
+$var wire      1 +!   imm [8] $end
+$var wire      1 ,!   imm [7] $end
+$var wire      1 -!   imm [6] $end
+$var wire      1 .!   imm [5] $end
+$var wire      1 /!   imm [4] $end
+$var wire      1 0!   imm [3] $end
+$var wire      1 1!   imm [2] $end
+$var wire      1 2!   imm [1] $end
+$var wire      1 b    imm [0] $end
+$var reg      32 >!   result_alu [31:0] $end
+$var parameter  7 ?!   OPCODE_R  $end
+$var parameter  7 @!   OPCODE_I  $end
+$var reg       5 A!   shamt [4:0] $end
+$upscope $end
+
+
+$scope module LOGIC_UNIT $end
+$var wire     32 G    op1 [31:0] $end
+$var wire     32 H    op2 [31:0] $end
+$var wire      7 M    opcode [6:0] $end
+$var wire      3 L    func3 [2:0] $end
+$var reg      32 B!   result_alu [31:0] $end
+$var parameter  7 C!   OPCODE_R  $end
+$var parameter  7 D!   OPCODE_I  $end
+$upscope $end
+
+
+$scope module COMP_UNIT $end
+$var wire     32 G    op1 [31:0] $end
+$var wire     32 H    op2 [31:0] $end
+$var wire      7 M    opcode [6:0] $end
+$var wire      3 L    func3 [2:0] $end
+$var reg      32 E!   result_alu [31:0] $end
+$var parameter  7 F!   OPCODE_R  $end
+$var parameter  7 G!   OPCODE_I  $end
+$upscope $end
+
+$upscope $end
+
+$upscope $end
+
+
+$scope task CHECK $end
+$var reg       1 H!   condition  $end
+$var reg      256 I!   msg [256:1] $end
+$upscope $end
+
+$upscope $end
+
+$enddefinitions $end
+$dumpvars
+b10011 G!
+b110011 F!
+b10011 D!
+b110011 C!
+b10011 @!
+b110011 ?!
+b10 E
+b1 D
+b0 C
+b0 B
+b0 A
+b1101111 @
+b10011 ?
+b110011 >
+b0 !
+b10001 "
+b100010 #
+0$
+b100000000 %
+b0 &
+b0 '
+b10011 (
+0)
+0*
+0+
+0,
+b11 -
+b0 .
+b0 /
+b10101010101010101010101010101010 0
+b10111011101110111011101110111011 1
+bz 2
+b10001 3
+b100010 4
+b100 5
+06
+07
+b100000000 8
+bz 9
+z:
+b0 ;
+b0 <
+0=
+b0 F
+b10001 G
+b100010 H
+0I
+b100000000 J
+b0 K
+b0 L
+b10011 M
+0N
+0O
+0P
+0Q
+b11 R
+b0 S
+b0 T
+b10101010101010101010101010101010 U
+b10111011101110111011101110111011 V
+b10001 W
+b100010 X
+b10001 Y
+b100010 Z
+b110011 [
+b10001 \
+b100010 ]
+z^
+0_
+0`
+0a
+zb
+b10001 c
+b0 d
+b100000000 e
+b100 f
+0g
+0h
+0i
+xj
+0k
+1l
+0m
+0n
+0o
+0p
+0q
+zr
+zs
+zt
+zu
+zv
+zw
+zx
+zy
+zz
+z{
+z|
+z}
+z~
+z!!
+z"!
+z#!
+z$!
+z%!
+z&!
+z'!
+z(!
+z)!
+z*!
+z+!
+z,!
+z-!
+z.!
+z/!
+z0!
+z1!
+z2!
+b110011 3!
+04!
+b110011 5!
+b0 6!
+b0 7!
+b0 8!
+b100010 9!
+0:!
+b110011 ;!
+b0 <!
+b100000 =!
+b0 >!
+bz A!
+b0 B!
+b0 E!
+xH!
+bx I!
+$end
+#10
+1=
+#20
+1H!
+b111000101110101011000010110110001110011001000000110111101110000001100010010000001110111011010000110010101101110001000000110111001101111001000000110011001101111011100100111011101100001011100100110010001101001011011100110011100100000001010000100000100101001 I!
+b1 ;
+b111000101110101011000010110110001110011001000000110111101110000001100100010000001110111011010000110010101101110001000000110111001101111001000000110011001101111011100100111011101100001011100100110010001101001011011100110011100100000001010000100001000101001 I!
+b10 ;
+b111011101100010010111110111001001100100001000000110100101110011001000000110010001110010011010010111011001100101011011100010000000101000011011100110111101110100001000000101100000101001 I!
+b11 ;
+0H!
+b11101110110001001011111011100100110010101100111010111110110011001101001011011000110010100100000011010010111001100100000011001000111001001101001011101100110010101101110001000000010100000110000001000000110111101110010001000000011000100101001 I!
+b1 <
+b1 .
+b11011110101011010000000000000001 0
+0=
+b11011110101011010000000000000001 U
+b1 S
+b11011110101011010000000000000001 W
+b11011110101011010000000000000001 Y
+b11011110101011010000000000000001 \
+b11011110101011010000000000000001 c
+b11011110101011010000000000000001 3
+#30
+1=
+#40
+0=
+#50
+1=
+#60
+1H!
+b101111101110011011001010110110001100101011000110111010001100101011001000010000001100110011011110111001001110111011000010111001001100100011001010110010000100000011001100111001001101111011011010010000001001101010001010100110100100000001010000100000100101001 I!
+b100 ;
+b10 .
+b11111110111011010000000000000010 1
+0=
+b11111110111011010000000000000010 V
+b10 S
+b11111110111011010000000000000010 W
+b11111110111011010000000000000010 Y
+b11111110111011010000000000000010 \
+b11111110111011010000000000000010 c
+b11111110111011010000000000000010 3
+#70
+1=
+#80
+b11000101011111011100110110010101101100011001010110001101110100011001010110010000100000011001100110111101110010011101110110000101110010011001000110010101100100001000000110011001110010011011110110110100100000010101110100001000100000001010000100000100101001 I!
+b101 ;
+b0 .
+0=
+b0 S
+b10001 W
+b10001 Y
+b10001 \
+b10001 c
+b10001 3
+#90
+1=
+#100
+b1 /
+b11001010111111101101000000001101 0
+0=
+b11001010111111101101000000001101 U
+b1 T
+b11001010111111101101000000001101 X
+b11001010111111101101000000001101 Z
+b11001010111111101101000000001101 ]
+b11001010111111101101000000001101 4
+#110
+1=
+#120
+b101111101110011011001010110110001100101011000110111010001100101011001000010000001100110011011110111001001110111011000010111001001100100011001010110010000100000011001100111001001101111011011010010000001001101010001010100110100100000001010000100001000101001 I!
+b110 ;
+b10 /
+b1011101011011111000000001101 1
+0=
+b1011101011011111000000001101 V
+b10 T
+b1011101011011111000000001101 X
+b1011101011011111000000001101 Z
+b1011101011011111000000001101 ]
+b1011101011011111000000001101 4
+#130
+1=
+#140
+b11001001011111011100110110010101101100011001010110001101110100011001010110010000100000011001100110111101110010011101110110000101110010011001000110010101100100001000000110011001110010011011110110110100100000010101110100001000100000001010000100001000101001 I!
+b111 ;
+b0 /
+0=
+b0 T
+b100010 X
+b100010 Z
+b100010 ]
+b100010 4
+#150
+1=
+#160
+b10000 "
+b100 #
+b100000 %
+0=
+b100000 J
+b100 H
+b10000 G
+b100 X
+b0 =!
+b110010 ;!
+b1 =!
+b10 =!
+b11 =!
+b100 =!
+b101 =!
+b110 =!
+b111 =!
+b1000 =!
+b1001 =!
+b1010 =!
+b1011 =!
+b1100 =!
+b1101 =!
+b1110 =!
+b1111 =!
+b10000 =!
+b10001 =!
+b10010 =!
+b10011 =!
+b10100 =!
+b10101 =!
+b10110 =!
+b10111 =!
+b11000 =!
+b11001 =!
+b11010 =!
+b11011 =!
+b11100 =!
+b11101 =!
+b11110 =!
+b11111 =!
+b100000 =!
+b10000 W
+b10000 Y
+b100 Z
+b100 ]
+b10000 \
+b10000 c
+b10000 3
+b110010 5!
+b100 4
+b100 9!
+b100000 e
+b110010 3!
+b0 =!
+b1 =!
+b110000 ;!
+b10 =!
+b110100 ;!
+b11 =!
+b100 =!
+b101 =!
+b10100 ;!
+b110 =!
+b111 =!
+b1000 =!
+b1001 =!
+b1010 =!
+b1011 =!
+b1100 =!
+b1101 =!
+b1110 =!
+b1111 =!
+b10000 =!
+b10001 =!
+b10010 =!
+b10011 =!
+b10100 =!
+b10101 =!
+b10110 =!
+b10111 =!
+b11000 =!
+b11001 =!
+b11010 =!
+b11011 =!
+b11100 =!
+b11101 =!
+b11110 =!
+b11111 =!
+b100000 =!
+b100000 8
+b10100 5!
+b110010 [
+b10100 3!
+b10100 [
+#170
+1=
+#180
+0H!
+b111011101101000011001010110111000100000011001010111100001011111011000010110110001110101010111110111001101110010011000110011110100110000001000000010100001000001010011000101010100100000011101010111001101100101011100110010000001101111011100000011001000101001 I!
+b10 <
+1)
+0=
+1N
+b100000 Z
+b100000 ]
+#190
+1=
+#200
+b10000001101111011100000011000100101011011010010110110101101101011001010110010001101001011000010111010001100101001000000111011101101000011001010110111000100000011001010111100001011111011000010110110001110101010111110111001101110010011000110011110100110001 I!
+b11 <
+0)
+0=
+0N
+b100 Z
+b100 ]
+#210
+b10000001101111011100000011000100101011011011110111000000110010001000000111011101101000011001010110111000100000011001010111100001011111011000010110110001110101010111110111001101110010011000110011110100110000001000000110000101100111011000010110100101101110 I!
+b100 <
+b1101111 (
+b10000 %
+1=
+b10000 J
+b1101111 M
+b0 Y
+b0 A!
+b0 \
+1g
+b10000 e
+1k
+17
+16
+b100000 5
+b10000 8
+b10000 5
+#220
+0=
+#230
+1H!
+b110101001110101011011010111000001011111011001010110111000100000011010010111001100100000011001000111001001101001011101100110010101101110001000000010100000110000001000000110111101110010001000000011000100101001 I!
+b1000 ;
+b11100000110001101011111011010100111010101101101011100000101111101100001011001000110010001110010001000000110100101110011001000000110010001110010011010010111011001100101011011100010000000101000011011100110111101110100001000000101100000101001 I!
+b1001 ;
+b110001101100001011011000110001101011111011010100111010101101101011100000101111101100001011001000110010001110010001000000110100101110011001000000110010001110010011010010111011001100101011011100010000000101000011011100110111101110100001000000101100000101001 I!
+b1010 ;
+1=
+#240
+0=
+#250
+1=
+#260
+0=
+#270
+1=
+#280
+0=
+#290
+1=
+#300
+0=
+#310
+1=
+#320
+0=
+#330
+1=
+#340

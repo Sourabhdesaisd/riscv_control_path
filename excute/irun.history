@@ -1,0 +1,29 @@
+s1(27Mar2019:10:14:29):  irun -access +rwc alu_control.v alu.v execute_stage.v pc_jump.v shift_op_alu.v 
+s2(27Mar2019:10:17:14):  irun -access +rwc alu_control.v alu.v execute_stage.v logical_op_alu.v ripple_carry_adder_alu.v tb_alu_top.v alu_top.v comparator_alu.v pc_jump.v shift_op_alu.v 
+s3(27Mar2019:10:18:10):  irun -access +rwc logical_op_alu.v ripple_carry_adder_alu.v tb_alu_top.v alu_top.v comparator_alu.v pc_jump.v shift_op_alu.v 
+s4(27Mar2019:10:19:02):  irun -access +rwc logical_op_alu.v ripple_carry_adder_alu.v tb_alu_top.v alu_top.v comparator_alu.v pc_jump.v shift_op_alu.v 
+s5(27Mar2019:10:47:22):  irun -access +rwc logical_op_alu.v ripple_carry_adder_alu.v tb_alu_top.v alu_top.v comparator_alu.v pc_jump.v shift_op_alu.v 
+s6(27Mar2019:10:47:42):  irun -access +rwc execute_stage.v logical_op_alu.v ripple_carry_adder_alu.v tb_alu_top.v alu_top.v comparator_alu.v pc_jump.v shift_op_alu.v 
+s7(27Mar2019:10:48:35):  irun -access +rwc execute_stage.v logical_op_alu.v ripple_carry_adder_alu.v tb_alu_top.v alu_top.v comparator_alu.v pc_jump.v shift_op_alu.v 
+s8(27Mar2019:10:51:48):  irun -access +rwc execute_stage.v logical_op_alu.v ripple_carry_adder_alu.v tb_alu_top.v alu_top.v comparator_alu.v pc_jump.v shift_op_alu.v 
+s9(27Mar2019:10:51:55):  irun -access +rwc execute_stage.v logical_op_alu.v ripple_carry_adder_alu.v tb_alu_top.v alu_top.v comparator_alu.v pc_jump.v shift_op_alu.v 
+s10(27Mar2019:11:00:24):  irun -access +rwc execute_stage.v logical_op_alu.v ripple_carry_adder_alu.v tb_alu_top.v alu_top.v comparator_alu.v pc_jump.v shift_op_alu.v 
+s11(27Mar2019:11:01:44):  irun -access +rwc execute_stage.v tb_excute.v 
+s12(27Mar2019:11:02:04):  irun -access +rwc execute_stage.v tb_excute.v 
+s13(27Mar2019:11:02:18):  irun -access +rwc execute_stage.v tb_excute.v 
+s14(27Mar2019:11:03:26):  irun -access +rwc execute_stage.v tb_excute.v 
+s15(27Mar2019:11:17:14):  irun -access +rwc execute_stage.v tb_excute.v 
+s16(27Mar2019:11:17:32):  irun -access +rwc execute_stage.v tb_excute.v 
+s17(27Mar2019:11:19:34):  irun -access +rwc pc_jump.v tb_pc_jump.v 
+s18(27Mar2019:11:20:12):  irun -access +rwc pc_jump.v tb_pc_jump.v 
+s19(27Mar2019:11:20:21):  irun -access +rwc pc_jump.v tb_pc_jump.v 
+s20(27Mar2019:11:21:45):  irun -access +rwc pc_jump.v tb_pc_jump.v 
+s21(27Mar2019:11:24:04):  irun -access +rwc pc_jump.v tb_pc_jump.v 
+s22(27Mar2019:11:26:18):  irun -access +rwc execute_stage.v tb_excute.v 
+s23(27Mar2019:11:26:56):  irun -access +rwc execute_stage.v tb_excute.v 
+s24(27Mar2019:11:27:18):  irun -access +rwc execute_stage.v tb_excute.v 
+s25(27Mar2019:11:30:56):  irun -access +rwc pc_jump.v tb_pc_jump.v 
+s26(29Mar2019:01:56:18):  irun -access +rwc execute_stage.v tb_excute.v 
+s27(29Mar2019:01:58:00):  irun -access +rwc execute_stage.v tb_excute.v 
+s28(29Mar2019:01:58:14):  irun -access +rwc execute_stage.v tb_excute.v 
+s29(29Mar2019:01:59:58):  irun -access +rwc execute_stage.v tb_excute.v 

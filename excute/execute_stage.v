@@ -1,3 +1,71 @@
+// OPCODES
+`define OPCODE_RTYPE 7'b0110011
+`define OPCODE_ITYPE 7'b0010011
+`define OPCODE_ILOAD 7'b0000011
+`define OPCODE_IJALR 7'b1100111
+`define OPCODE_BTYPE 7'b1100011
+`define OPCODE_STYPE 7'b0100011
+`define OPCODE_JTYPE 7'b1101111
+`define OPCODE_AUIPC 7'b0010111
+`define OPCODE_UTYPE 7'b0110111
+
+// FUNC7 - ADD
+`define FUNC7_ADD 7'b0000000
+`define FUNC7_SUB 7'b0100000
+
+// FUNC7 - M Unit
+`define FUNC7_M_UNIT 7'b0000001
+
+// ALU Codes
+`define ALU_ADD  4'b0000
+`define ALU_SUB  4'b0001
+`define ALU_AND  4'b0010
+`define ALU_OR   4'b0011
+`define ALU_XOR  4'b0100
+`define ALU_SLL  4'b0101
+`define ALU_SRL  4'b0110
+`define ALU_SRA  4'b0111
+`define ALU_SLT  4'b1000
+`define ALU_SLTU 4'b1001
+
+// B Type Codes
+`define BTYPE_BEQ  3'b000
+`define BTYPE_BNE  3'b001
+`define BTYPE_BLT  3'b100
+`define BTYPE_BGE  3'b101
+`define BTYPE_BLTU 3'b110
+`define BTYPE_BGEU 3'b111
+
+// Forwarding Unit
+`define FORWARD_ORG 2'b00
+`define FORWARD_MEM 2'b01
+`define FORWARD_WB  2'b10
+
+// Store Types
+`define STORE_SB  2'b00
+`define STORE_SH  2'b01
+`define STORE_SW  2'b10
+`define STORE_DEF 2'b11
+
+// Load Types
+`define LOAD_LB  3'b000
+`define LOAD_HD  3'b001
+`define LOAD_LW  3'b010
+`define LOAD_LBU 3'b011
+`define LOAD_LHU 3'b100
+`define LOAD_DEF 3'b111
+
+// Constants
+`define ZERO_32BIT  32'h00000000
+`define ZERO_12BIT  12'h000
+
+// BTB State
+`define STRONG_NOT_TAKEN 2'b00
+`define WEAK_NOT_TAKEN   2'b01
+`define STRONG_TAKEN     2'b10
+`define WEAK_TAKEN       2'b11
+
+
 module execute_stage(
     input [31:0] pc,
     input [31:0] op1,
@@ -11,10 +79,7 @@ module execute_stage(
     input predictedTaken,
     input invalid_inst,
     input ex_wb_reg_file,
-   // input [31:0] m_unit_result,
-   // input m_unit_wr,
-  //  input m_unit_ready,
-  //  input [4:0] m_unit_dest,
+  
     input [4:0] alu_rd,
     
     input [1:0] operand_a_forward_cntl,
@@ -33,7 +98,6 @@ module execute_stage(
     output wire wb_reg_file
 );
 
-    wire [3:0] ALUControl;
     reg [31:0] op1_forwarded;
     reg [31:0] op2_forwarded;
     reg [31:0] op1_alu;
@@ -43,9 +107,11 @@ module execute_stage(
     wire [31:0] op1_valid;
     wire [31:0] op2_valid;
 
-    wire lt_flag;
-    wire ltu_flag;
-    wire zero_flag;    
+    wire zero_flag;   
+    wire carry_flag;
+    wire negative_flag;
+    wire overflow_flag;
+
 
     // Mux for forwarding operand 1
     always @(*) begin
@@ -105,8 +171,9 @@ module execute_stage(
         .op1(op1_forwarded),
         .opcode(opcode),
         .func3(func3),
-        .lt_flag(lt_flag),
-        .ltu_flag(ltu_flag),
+        .carry_flag(carry_flag),
+        .negative_flag(negative_flag),
+        .overflow_flag (overflow_flag),
         .zero_flag(zero_flag),
         .predictedTaken(predictedTaken),
         .update_pc(pc_jump_addr),
@@ -115,28 +182,23 @@ module execute_stage(
         .update_btb(update_btb)
     );
 
-    // Instantiate the ALU Controller
-    alu_control alu_control_inst (
-        .func3(func3),
-        .func7(func7),
-        .opcode(opcode),
-        .ALUControl(ALUControl)
-    );   
 
-    // Instantiate the ALU module
-    alu alu_inst (
-        .op1(op1_valid),
-        .op2(op2_valid),
-        .ALUControl(ALUControl),
-        .result_alu(alu_result),
-        .lt_flag(lt_flag),
-        .ltu_flag(ltu_flag),
-        .zero_flag(zero_flag)
-    );
+    alu_top  alu_top_inst (
+     
+    .op1(op1),
+    .op2(op2),      
+    .imm(imm),      
+    .opcode(opcode),
+    .func3(func3),
+    .func7(func7),
+    .result_alu(alu_result),
 
-    // Check if we have data from M unit
-  //  assign result = m_unit_ready ? m_unit_result : alu_result;
-   // assign wb_reg_file = m_unit_ready ? m_unit_wr : ex_wb_reg_file;
-   // assign wb_rd = m_unit_ready ? m_unit_dest : (pipeline_flush ? 5'b00000 : alu_rd);
 
+    .carry_flag(carry_flag),
+    .zero_flag(negative_flag),
+    .negative_flag(negative_flag),
+    .overflow_flag(overflow_flag)
+  );
+
+   
 endmodule

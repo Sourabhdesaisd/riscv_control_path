@@ -1,4 +1,29 @@
-`include "defines.vh"
+//`include "../defines.vh"
+`define STORE_SB  2'b00
+`define STORE_SH  2'b01
+`define STORE_SW  2'b10
+`define STORE_DEF 2'b11
+
+// Load Types
+`define LOAD_LB  3'b000
+`define LOAD_HD  3'b001
+`define LOAD_LW  3'b010
+`define LOAD_LBU 3'b011
+`define LOAD_LHU 3'b100
+`define LOAD_DEF 3'b111
+
+`define OPCODE_RTYPE 7'b0110011
+`define OPCODE_ITYPE 7'b0010011
+`define OPCODE_ILOAD 7'b0000011
+`define OPCODE_IJALR 7'b1100111
+`define OPCODE_BTYPE 7'b1100011
+`define OPCODE_STYPE 7'b0100011
+`define OPCODE_JTYPE 7'b1101111
+`define OPCODE_AUIPC 7'b0010111
+`define OPCODE_UTYPE 7'b0110111
+
+`define FUNC7_ADD 7'b0000000
+`define FUNC7_SUB 7'b0100000
 
 module decode_controller (
     input [6:0] opcode,

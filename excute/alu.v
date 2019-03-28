@@ -1,195 +1,47 @@
-`include "defines.vh"
-
-/*module alu(
-    input [31:0] op1,
-    input [31:0] op2,
-    input [3:0] ALUControl,
-
-    output reg [31:0] result,
-    output lt_flag,   // signed comparison
-    output ltu_flag,  // unsigned comparison
-    output zero_flag  // result == 0
-);
-    assign lt_flag = $signed(op1) < $signed(op2);
-    assign ltu_flag = op1 < op2;
-
-    always @(*) begin
-        case (ALUControl)
-            `ALU_ADD:  result = op1 + op2;
-            `ALU_SUB:  result = op1 - op2;
-            `ALU_AND:  result = op1 & op2;
-            `ALU_OR:   result = op1 | op2;
-            `ALU_XOR:  result = op1 ^ op2;
-            `ALU_SLL:  result = op1 << op2[4:0];    // Shift left logical - lower 5 bits used according to RISCV Spec
-            `ALU_SRL:  result = op1 >> op2[4:0];    // Shift right logical
-            `ALU_SRA:  result = $signed(op1) >>> op2[4:0];   // Shift right arithmetic
-            `ALU_SLT:  result = lt_flag ? 32'd1 : 32'd0;
-            `ALU_SLTU: result = ltu_flag ? 32'd1 : 32'd0;
-            default:  result = 32'b0;
-        endcase
-    end
-
-    assign zero_flag = (result == 32'b0);
-
-endmodule*/
-
-module alu (
+module ripple_carry_adder_alu (
     input  [31:0] op1,
     input  [31:0] op2,
-    input         cin,             // carry-in (0=ADD, 1=SUB)
-    output [31:0] result,
-    output        carry_flag,      // CARRY FLAG (unsigned overflow)
-    output        zero_flag,       // Result is zero
-    output        negative_flag,   // MSB of result
-    output        overflow_flag    // Signed overflow flag
+    input         sub,               // 0 = ADD, 1 = SUB
+    output [31:0] result_alu,
+    output        carry_flag,
+    output        zero_flag,
+    output        negative_flag,
+    output        overflow_flag
 );
 
-    reg [32:0] c;      // Carry chain (c[0] to c[32])
-    reg [31:0] s;      // Sum bits
+    // -------------------------
+    // For SUB ? perform: op1 + (~op2) + 1
+    // -------------------------
+    wire [31:0] op2_in  = sub ? ~op2 : op2;
+    wire        cin_in  = sub ? 1'b1 : 1'b0;
+
+    reg [31:0] s;
+    reg [32:0] c; // c[0] to c[32]
     integer i;
 
     always @(*) begin
-        c[0] = cin;    // starting carry
+        c[0] = cin_in;
 
-        // RIPPLE CARRY ADDER
         for (i = 0; i < 32; i = i + 1) begin
             // SUM
-            s[i]   = a[i] ^ b[i] ^ c[i];
+            s[i] = op1[i] ^ op2_in[i] ^ c[i];
 
             // CARRY
-            c[i+1] = (a[i] & b[i]) |
-                     (a[i] & c[i]) |
-                     (b[i] & c[i]);
+            c[i+1] = (op1[i] & op2_in[i]) |
+                     (op1[i] & c[i])      |
+                     (op2_in[i] & c[i]);
         end
     end
 
-    // Final SUM
-    assign result = s;
+    assign result_alu = s;
 
-    // ? CARRY FLAG IS HERE
-    assign carry_flag = c[32];
+    assign carry_flag    = c[32];
+    assign zero_flag     = (result_alu == 32'd0);
+    assign negative_flag = result_alu[31];
 
-    // ZERO FLAG
-    assign zero_flag = (result == 32'd0);
-
-    // NEGATIVE FLAG
-    assign negative_flag = result [31];
-
-    // SIGNED OVERFLOW FLAG
-    assign overflow_flag = (a[31] == b[31]) && (result [31] != a[31]);
-
-endmodule
-
-
-
-
-//`timescale 1ns/1ps
-
-module tb_ripple_carry_adder32;
-
-    reg  [31:0] a, b;
-    reg         cin;
-    wire [31:0] sum;
-    wire        carry_flag;
-    wire        zero_flag;
-    wire        negative_flag;
-    wire        overflow_flag;
-
-    // DUT
-    ripple_carry_adder32 dut (
-        .a(a),
-        .b(b),
-        .cin(cin),
-        .sum(sum),
-        .carry_flag(carry_flag),
-        .zero_flag(zero_flag),
-        .negative_flag(negative_flag),
-        .overflow_flag(overflow_flag)
-    );
-
-initial begin
-$shm_open("wave.shm");
-$shm_probe("ACTMF");
-end
-
-
-
-    initial begin
-        $display("=== Ripple Carry Adder Testbench ===");
-
-        // ----------------------------------------
-        // Test 1: Unsigned Carry
-        // ----------------------------------------
-        a   = 32'hFFFF_FFFF;
-        b   = 32'h0000_0001;
-        cin = 0;
-        #1;
-        $display("T1: a=%h b=%h cin=%b | sum=%h c=%b z=%b n=%b ov=%b",
-                 a, b, cin, sum, carry_flag, zero_flag, negative_flag, overflow_flag);
-
-        // ----------------------------------------
-        // Test 2: Normal Addition
-        // ----------------------------------------
-        a   = 32'd25;
-        b   = 32'd17;
-        cin = 0;
-        #1;
-        $display("T2: a=%h b=%h cin=%b | sum=%h c=%b z=%b n=%b ov=%b",
-                 a, b, cin, sum, carry_flag, zero_flag, negative_flag, overflow_flag);
-
-        // ----------------------------------------
-        // Test 3: Zero Flag (55 - 55 = 0)
-        // ----------------------------------------
-        a   = 32'd55;
-        b   = ~32'd55;
-        cin = 1;   // a + (~b) + 1 = a - b
-        #1;
-        $display("T3: a=%h b=%h cin=%b | sum=%h c=%b z=%b n=%b ov=%b",
-                 a, b, cin, sum, carry_flag, zero_flag, negative_flag, overflow_flag);
-
-        // ----------------------------------------
-        // Test 4: Negative Result
-        // ----------------------------------------
-        a   = -32'd10;
-        b   =  32'd3;
-        cin = 0;
-        #1;
-        $display("T4: a=%h b=%h cin=%b | sum=%h c=%b z=%b n=%b ov=%b",
-                 a, b, cin, sum, carry_flag, zero_flag, negative_flag, overflow_flag);
-
-        // ----------------------------------------
-        // Test 5: Signed Overflow (+ + = -)
-        // ----------------------------------------
-        a   = 32'd2147483600;   // large positive
-        b   = 32'd200;          // positive
-        cin = 0;
-        #1;
-        $display("T5: a=%h b=%h cin=%b | sum=%h c=%b z=%b n=%b ov=%b",
-                 a, b, cin, sum, carry_flag, zero_flag, negative_flag, overflow_flag);
-
-        // ----------------------------------------
-        // Test 6: Signed Overflow (- - = +)
-        // ----------------------------------------
-        a   = -32'd2147483600;
-        b   = -32'd200;
-        cin = 0;
-        #1;
-        $display("T6: a=%h b=%h cin=%b | sum=%h c=%b z=%b n=%b ov=%b",
-                 a, b, cin, sum, carry_flag, zero_flag, negative_flag, overflow_flag);
-
-        // ----------------------------------------
-        // Test 7: Subtraction (100 - 40)
-        // ----------------------------------------
-        a   = 32'd100;
-        b   = ~32'd40;   // invert for subtraction
-        cin = 1;
-        #1;
-        $display("T7: a=%h b=%h cin=%b | sum=%h c=%b z=%b n=%b ov=%b",
-                 a, b, cin, sum, carry_flag, zero_flag, negative_flag, overflow_flag);
-
-        $display("=== TEST COMPLETE ===");
-        $finish;
-    end
+    // Signed overflow detection
+    assign overflow_flag = (op1[31] == op2_in[31]) &&
+                           (result_alu[31] != op1[31]);
 
 endmodule
 
