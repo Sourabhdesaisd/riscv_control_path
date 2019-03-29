@@ -1,4 +1,4 @@
-`include "defines.vh"
+`include "../defines.vh"
 
 module id_ex_pipeline(
     input clk,

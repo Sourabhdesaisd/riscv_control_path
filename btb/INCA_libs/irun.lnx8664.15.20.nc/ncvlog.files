@@ -1,0 +1,12 @@
+//
+// File created by:  irun
+// Do not modify this file
+//
+/home/vv2trainee8/Desktop/Sourabh/riscv_control_path/btb/btb_file.v
+/home/vv2trainee8/Desktop/Sourabh/riscv_control_path/btb/btb_read.v
+/home/vv2trainee8/Desktop/Sourabh/riscv_control_path/btb/btb.v
+/home/vv2trainee8/Desktop/Sourabh/riscv_control_path/btb/btb_write.v
+/home/vv2trainee8/Desktop/Sourabh/riscv_control_path/btb/dynamic_branch_predictor.v
+/home/vv2trainee8/Desktop/Sourabh/riscv_control_path/btb/lru_next.v
+/home/vv2trainee8/Desktop/Sourabh/riscv_control_path/btb/lru_reg.v
+/home/vv2trainee8/Desktop/Sourabh/riscv_control_path/btb/tb_btb.v

@@ -1,4 +1,73 @@
+// OPCODES
+`define OPCODE_RTYPE 7'b0110011
+`define OPCODE_ITYPE 7'b0010011
+`define OPCODE_ILOAD 7'b0000011
+`define OPCODE_IJALR 7'b1100111
+`define OPCODE_BTYPE 7'b1100011
+`define OPCODE_STYPE 7'b0100011
+`define OPCODE_JTYPE 7'b1101111
+`define OPCODE_AUIPC 7'b0010111
+`define OPCODE_UTYPE 7'b0110111
 
+// FUNC7 - ADD
+`define FUNC7_ADD 7'b0000000
+`define FUNC7_SUB 7'b0100000
+
+// FUNC7 - M Unit
+`define FUNC7_M_UNIT 7'b0000001
+
+// ALU Codes
+`define ALU_ADD  4'b0000
+`define ALU_SUB  4'b0001
+`define ALU_AND  4'b0010
+`define ALU_OR   4'b0011
+`define ALU_XOR  4'b0100
+`define ALU_SLL  4'b0101
+`define ALU_SRL  4'b0110
+`define ALU_SRA  4'b0111
+`define ALU_SLT  4'b1000
+`define ALU_SLTU 4'b1001
+
+// B Type Codes
+`define BTYPE_BEQ  3'b000
+`define BTYPE_BNE  3'b001
+`define BTYPE_BLT  3'b100
+`define BTYPE_BGE  3'b101
+`define BTYPE_BLTU 3'b110
+`define BTYPE_BGEU 3'b111
+
+// Forwarding Unit
+`define FORWARD_ORG 2'b00
+`define FORWARD_MEM 2'b01
+`define FORWARD_WB  2'b10
+
+// Store Types
+`define STORE_SB  2'b00
+`define STORE_SH  2'b01
+`define STORE_SW  2'b10
+`define STORE_DEF 2'b11
+
+// Load Types
+`define LOAD_LB  3'b000
+`define LOAD_HD  3'b001
+`define LOAD_LW  3'b010
+`define LOAD_LBU 3'b011
+`define LOAD_LHU 3'b100
+`define LOAD_DEF 3'b111
+
+// Constants
+`define ZERO_32BIT  32'h00000000
+`define ZERO_12BIT  12'h000
+
+// BTB State
+`define STRONG_NOT_TAKEN 2'b00
+`define WEAK_NOT_TAKEN   2'b01
+`define STRONG_TAKEN     2'b10
+`define WEAK_TAKEN       2'b11
+
+
+
+/*
 module tb_execute_stage;
 
     // -------------------------------------------------------------------------
@@ -254,5 +323,174 @@ module tb_execute_stage;
         #100 $finish;
     end
 
+endmodule*/
+
+
+
+module tb_execute_stage;
+    reg  [31:0] pc;
+    reg  [31:0] op1;
+    reg  [31:0] op2;
+    reg         pipeline_flush;
+    reg  [31:0] immediate;
+    reg  [6:0]  func7;
+    reg  [2:0]  func3;
+    reg  [6:0]  opcode;
+    reg         ex_alu_src;
+    reg         predictedTaken;
+    reg         invalid_inst;
+    reg         ex_wb_reg_file;
+    reg  [4:0]  alu_rd;
+    reg  [1:0]  operand_a_forward_cntl;
+    reg  [1:0]  operand_b_forward_cntl;
+    reg  [31:0] data_forward_mem;
+    reg  [31:0] data_forward_wb;
+
+    wire [31:0] result_alu;
+    wire [31:0] op1_selected;
+    wire [31:0] op2_selected;
+    wire [31:0] pc_jump_addr;
+    wire        jump_en;
+    wire        update_btb;
+    wire [31:0] calc_jump_addr;
+    wire [4:0]  wb_rd;
+    wire        wb_reg_file;
+
+    // DUT (use fixed/updated RTL file name if you replaced it)
+    execute_stage dut (
+        .pc(pc),
+        .op1(op1),
+        .op2(op2),
+        .pipeline_flush(pipeline_flush),
+        .immediate(immediate),
+        .func7(func7),
+        .func3(func3),
+        .opcode(opcode),
+        .ex_alu_src(ex_alu_src),
+        .predictedTaken(predictedTaken),
+        .invalid_inst(invalid_inst),
+        .ex_wb_reg_file(ex_wb_reg_file),
+        .alu_rd(alu_rd),
+        .operand_a_forward_cntl(operand_a_forward_cntl),
+        .operand_b_forward_cntl(operand_b_forward_cntl),
+        .data_forward_mem(data_forward_mem),
+        .data_forward_wb(data_forward_wb),
+
+        .result_alu(result_alu),
+        .op1_selected(op1_selected),
+        .op2_selected(op2_selected),
+        .pc_jump_addr(pc_jump_addr),
+        .jump_en(jump_en),
+        .update_btb(update_btb),
+        .calc_jump_addr(calc_jump_addr),
+        .wb_rd(wb_rd),
+        .wb_reg_file(wb_reg_file)
+    );
+
+    integer pass_count, fail_count;
+    task CHECK;
+        input condition;
+        input [256:1] msg;
+        begin
+            if (condition) begin $display("[PASS] %s", msg); pass_count = pass_count + 1; end
+            else begin $display("[FAIL] %s", msg); fail_count = fail_count + 1; end
+        end
+    endtask
+
+    reg clk;
+    initial clk = 0; always #5 clk = ~clk;
+    initial begin
+    $shm_open("wave.shm");
+    $shm_probe("ACTMF");
+    end
+
+    initial begin
+        
+        pass_count = 0; fail_count = 0;
+
+        // defaults
+        pc = 0;
+        op1 = 32'h10; op2 = 32'h4;
+        pipeline_flush = 0;
+        immediate = 32'h20;
+        func7 = `FUNC7_ADD;
+        func3 = `ALU_ADD;//[2:0]; // not exactly func3 but reuse for simple add test
+        opcode = `OPCODE_ITYPE; // test ADDI-style
+        ex_alu_src = 0;
+        predictedTaken = 0;
+        invalid_inst = 0;
+        ex_wb_reg_file = 1'b1;
+        alu_rd = 5'd5;
+
+        operand_a_forward_cntl = `FORWARD_ORG;
+        operand_b_forward_cntl = `FORWARD_ORG;
+        data_forward_mem = 32'hDEAD_AAAA;
+        data_forward_wb  = 32'hBEEF_BBBB;
+
+        #10;
+
+        // no-forward tests
+        CHECK(op1_selected === op1, "op1 selected equals op1 (no forwarding)");
+        CHECK(op2_selected === op2, "op2 selected equals op2 (no forwarding)");
+
+        // wb signals driven
+        CHECK(wb_rd !== 5'bxxxxx, "wb_rd driven (not X)");
+        CHECK(wb_reg_file === 1'b0 || wb_reg_file === 1'b1, "wb_reg_file driven (0 or 1)");
+
+        // forward A from MEM
+        operand_a_forward_cntl = `FORWARD_MEM; data_forward_mem = 32'h11112222; #10;
+        CHECK(op1_selected === 32'h11112222, "op1 forwarded from MEM");
+
+        // forward A from WB
+        operand_a_forward_cntl = `FORWARD_WB; data_forward_wb = 32'h33334444; #10;
+        CHECK(op1_selected === 32'h33334444, "op1 forwarded from WB");
+        operand_a_forward_cntl = `FORWARD_ORG; #5;
+
+        // forward B from MEM
+        operand_b_forward_cntl = `FORWARD_MEM; data_forward_mem = 32'h55556666; #10;
+        CHECK(op2_selected === 32'h55556666, "op2 forwarded from MEM");
+
+        // forward B from WB
+        operand_b_forward_cntl = `FORWARD_WB; data_forward_wb = 32'h77778888; #10;
+        CHECK(op2_selected === 32'h77778888, "op2 forwarded from WB");
+        operand_b_forward_cntl = `FORWARD_ORG; #5;
+
+        // ---- ALU behavior (use I-TYPE opcode so ALU will use immediate when ex_alu_src=1) ----
+        op1 = 32'h00000010;
+        op2 = 32'h00000004;
+        immediate = 32'h00000020;
+        opcode = `OPCODE_ITYPE; // ADI/OP-IMM mapping used by many student designs
+        func3 = 3'b000;
+        func7 = `FUNC7_ADD;
+
+        // expect op1 + op2 when ex_alu_src=0 (if ALU uses op2 as second operand)
+        ex_alu_src = 1'b0;
+        #10;
+        CHECK(result_alu === (op1 + op2), "result_alu equals op1+op2 when ex_alu_src=0");
+
+        // expect op1 + immediate when ex_alu_src=1
+        ex_alu_src = 1'b1;
+        #10;
+        CHECK(result_alu === (op1 + immediate), "result_alu equals op1+immediate when ex_alu_src=1");
+
+        // restore
+        ex_alu_src = 1'b0;
+        #10;
+        CHECK(result_alu === (op1 + op2), "result_alu returns to op1+op2 when ex_alu_src=0");
+
+        // jump sanity
+        opcode = `OPCODE_JTYPE; immediate = 32'h10; #10;
+        CHECK(jump_en === 1'b0 || jump_en === 1'b1, "jump_en driven");
+        CHECK(pc_jump_addr !== 32'hXXXXXXXX, "pc_jump_addr driven");
+        CHECK(calc_jump_addr !== 32'hXXXXXXXX, "calc_jump_addr driven");
+
+        // summary
+        #5;
+        $display("===================================");
+        $display(" TB SUMMARY: PASSED=%0d  FAILED=%0d", pass_count, fail_count);
+        $display("===================================");
+        #100 $finish;
+    end
+
 endmodule
- 
+

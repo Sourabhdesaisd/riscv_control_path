@@ -1,0 +1,39 @@
+irun(64): 15.20-s051: (c) Copyright 1995-2018 Cadence Design Systems, Inc.
+TOOL:	irun(64)	15.20-s051: Started on Mar 29, 2019 at 08:14:15 IST
+irun
+	-f compile.f
+		+incdir+./
+		+incdir+./btb
+		+incdir+./fetch
+		+incdir+./decode
+		+incdir+./execute
+		+incdir+./memory
+		+incdir+./writeback
+		+incdir+./pipeline
+		define.vh
+		btb/btb.v
+		btb/btb_read.v
+		btb/btb_write.v
+		btb/dynamic_branch_predictor.v
+		fetch/pc.v
+		fetch/pc_update.v
+		fetch/fetch_stage.v
+		decode/register_file.v
+		decode/decode_controller.v
+		decode/decode_stage.v
+		excute/alu_top.v
+		excute/pc_jump.v
+		excute/execute_stage.v
+		memory/data_mem.v
+		memory/mem_stage.v
+		writeback/writeback_stage.v
+		pipeline/if_id_pipeline.v
+		pipeline/id_ex_pipeline.v
+		pipeline/ex_mem_pipeline.v
+		pipeline/mem_wb_pipeline.v
+		forwarding_unit.v
+		hazard_unit.v
+		rv32i_core.v
+		rv32i_core_tb.v
+irun: *E,FMUK: The type of the file (define.vh) could not be determined.
+TOOL:	irun(64)	15.20-s051: Exiting on Mar 29, 2019 at 08:14:15 IST  (total: 00:00:00)

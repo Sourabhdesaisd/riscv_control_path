@@ -5,7 +5,9 @@
 -XLMODE
 ./INCA_libs/irun.lnx8664.15.20.nc
 -RUNMODE
+alu_top.v
 execute_stage.v
+tb_alu_top.v
 tb_excute.v
 -CDSLIB
 ./INCA_libs/irun.lnx8664.15.20.nc/cdsrun.lib

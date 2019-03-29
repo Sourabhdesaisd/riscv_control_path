@@ -1,0 +1,1 @@
+s1(29Mar2019:07:54:30):  irun -access +rwc ex_mem_pipeline.v id_ex_pipeline.v if_id_pipeline.v mem_wb_pipeline.v 

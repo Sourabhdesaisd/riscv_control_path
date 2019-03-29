@@ -13,9 +13,6 @@
 `define FUNC7_ADD 7'b0000000
 `define FUNC7_SUB 7'b0100000
 
-// FUNC7 - M Unit
-`define FUNC7_M_UNIT 7'b0000001
-
 // ALU Codes
 `define ALU_ADD  4'b0000
 `define ALU_SUB  4'b0001
@@ -102,7 +99,7 @@ module execute_stage(
     reg [31:0] op2_forwarded;
     reg [31:0] op1_alu;
     reg [31:0] op2_alu;
-    wire [31:0] alu_result;
+   // wire [31:0] alu_result;
 
     wire [31:0] op1_valid;
     wire [31:0] op2_valid;
@@ -183,22 +180,68 @@ module execute_stage(
     );
 
 
-    alu_top  alu_top_inst (
-     
-    .op1(op1),
-    .op2(op2),      
-    .imm(imm),      
+alu_top alu_top_inst (
+    .op1(op1_alu),
+    .op2(op2_alu),
+    .imm(immediate),
     .opcode(opcode),
     .func3(func3),
     .func7(func7),
-    .result_alu(alu_result),
 
-
-    .carry_flag(carry_flag),
-    .zero_flag(negative_flag),
+    .result_alu(result_alu),
+    .zero_flag(zero_flag),
     .negative_flag(negative_flag),
+    .carry_flag(carry_flag),
     .overflow_flag(overflow_flag)
-  );
+);
+      
+   ripple_carry_adder_alu ADD_UNIT (
+        .op1(op1),
+        .op2(op2),
+        .sub(is_sub),          // select ADD or SUB
+        .result_alu(add_res),
+        .carry_flag(carry_flag),
+        .zero_flag(zero_flag),
+        .negative_flag(negative_flag),
+        .overflow_flag(overflow_flag)
+    );
 
+    //----------------------------------------------------------
+    // SHIFTER
+    //----------------------------------------------------------
+    shift_op_alu SHIFT_UNIT (
+        .op1(op1),
+        .op2(op2),
+        .opcode(opcode),
+        .func3(func3),
+        .func7(func7),
+        .imm(imm),
+        .result_alu(shift_res)
+    );
+
+    //----------------------------------------------------------
+    // LOGICAL UNIT
+    //----------------------------------------------------------
+    logical_op_alu LOGIC_UNIT (
+        .op1(op1),
+        .op2(op2),
+        .opcode(opcode),
+        .func3(func3),
+        .result_alu(logic_res)
+    );
+
+    //----------------------------------------------------------
+    // COMPARATOR UNIT
+    //----------------------------------------------------------
+    comparator_alu COMP_UNIT (
+        .op1(op1),
+        .op2(op2),
+        .opcode(opcode),
+        .func3(func3),
+        .result_alu(comp_res)
+    );
+//assign alu_result= result_alu;
+assign wb_reg_file = ex_wb_reg_file; // temp dont use in pipeline
+assign wb_rd       = alu_rd;
    
 endmodule

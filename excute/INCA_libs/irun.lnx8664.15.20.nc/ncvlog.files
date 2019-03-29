@@ -2,5 +2,7 @@
 // File created by:  irun
 // Do not modify this file
 //
+/home/vv2trainee8/Desktop/Sourabh/riscv_control_path/excute/alu_top.v
 /home/vv2trainee8/Desktop/Sourabh/riscv_control_path/excute/execute_stage.v
+/home/vv2trainee8/Desktop/Sourabh/riscv_control_path/excute/tb_alu_top.v
 /home/vv2trainee8/Desktop/Sourabh/riscv_control_path/excute/tb_excute.v

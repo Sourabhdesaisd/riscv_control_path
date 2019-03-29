@@ -4,5 +4,7 @@
 //
 -access
 +rwc
+alu_top.v
 execute_stage.v
+tb_alu_top.v
 tb_excute.v

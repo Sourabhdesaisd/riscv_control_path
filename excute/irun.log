@@ -1,8 +1,10 @@
 irun(64): 15.20-s051: (c) Copyright 1995-2018 Cadence Design Systems, Inc.
-TOOL:	irun(64)	15.20-s051: Started on Mar 29, 2019 at 01:59:58 IST
+TOOL:	irun(64)	15.20-s051: Started on Mar 29, 2019 at 03:10:27 IST
 irun
 	-access +rwc
+	alu_top.v
 	execute_stage.v
+	tb_alu_top.v
 	tb_excute.v
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
 |
@@ -28,9 +30,9 @@ irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied '
 DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 |
 irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
-Recompiling... reason: file './tb_excute.v' is newer than expected.
-	expected: Fri Mar 29 01:58:12 2019
-	actual:   Fri Mar 29 01:59:57 2019
+Recompiling... reason: file './execute_stage.v' is newer than expected.
+	expected: Fri Mar 29 03:09:28 2019
+	actual:   Fri Mar 29 03:09:55 2019
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
 |
 irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied '/tools/cadence/FOUNDRY/analog/45nm/gpdk045' (cds.lib command ignored).
@@ -70,10 +72,23 @@ ncelab: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/ho
 	Elaborating the design hierarchy:
 		Caching library 'worklib' ....... Done
 	Top level design units:
+		tb_alu_top
 		tb_execute_stage
-    .imm(imm),      
-           |
-ncelab: *W,CUVMPW (./execute_stage.v,190|11): port sizes differ in port connection (1/32).
+        .result_alu(add_res),
+                          |
+ncelab: *W,CUVMPW (./execute_stage.v,205|26): port sizes differ in port connection (1/32).
+        .imm(imm),
+               |
+ncelab: *W,CUVMPW (./execute_stage.v,221|15): port sizes differ in port connection (1/32).
+        .result_alu(shift_res)
+                            |
+ncelab: *W,CUVMPW (./execute_stage.v,222|28): port sizes differ in port connection (1/32).
+        .result_alu(logic_res)
+                            |
+ncelab: *W,CUVMPW (./execute_stage.v,233|28): port sizes differ in port connection (1/32).
+        .result_alu(comp_res)
+                           |
+ncelab: *W,CUVMPW (./execute_stage.v,244|27): port sizes differ in port connection (1/32).
 	Building instance overlay tables: .................... Done
 	Generating native compiled code:
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
@@ -82,54 +97,76 @@ ncvlog_cg: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission den
 DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 |
 ncvlog_cg: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
-		worklib.tb_execute_stage:v <0x476bb525>
-			streams:  22, words: 20191
+		worklib.tb_execute_stage:v <0x568d6c16>
+			streams:  22, words: 18427
 	Building instance specific data structures.
-    .imm(imm),      
-           |
-ncelab: *W,CSINFI (./execute_stage.v,190|11): implicit wire has no fanin (tb_execute_stage.dut.imm).
+        .sub(is_sub),          // select ADD or SUB
+                  |
+ncelab: *W,CSINFI (./execute_stage.v,204|18): implicit wire has no fanin (tb_execute_stage.dut.is_sub).
+        .imm(imm),
+               |
+ncelab: *W,CSINFI (./execute_stage.v,221|15): implicit wire has no fanin (tb_execute_stage.dut.imm).
 	Loading native compiled code:     .................... Done
 	Design hierarchy summary:
-		              Instances  Unique
-		Modules:              8       8
-		Registers:           34      34
-		Scalar wires:        59       -
-		Vectored wires:      30       -
-		Always blocks:        9       9
-		Initial blocks:       3       3
-		Cont. assignments:   16      30
-		Pseudo assignments:  18      18
-	Writing initial simulation snapshot: worklib.tb_execute_stage:v
+		               Instances  Unique
+		Modules:              18       9
+		Registers:            55      40
+		Scalar wires:         73       -
+		Expanded wires:      128       4
+		Vectored wires:       44       -
+		Always blocks:        18       9
+		Initial blocks:        5       5
+		Cont. assignments:    27      32
+		Pseudo assignments:   26      26
+	Writing initial simulation snapshot: worklib.tb_alu_top:v
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
 |
 ncsim: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied '/tools/cadence/FOUNDRY/analog/45nm/gpdk045' (cds.lib command ignored).
 DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 |
 ncsim: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
-Loading snapshot worklib.tb_execute_stage:v .................... Done
+Loading snapshot worklib.tb_alu_top:v .................... Done
 ncsim> source /tools/cadence/INCISIVE152/tools/inca/files/ncsimrc
 ncsim> run
-[PASS] quals op1 when no forwarding (A)
-[PASS] quals op2 when no forwarding (B)
-[PASS]          wb_rd is driven (not X)
-[FAIL]   wb_reg_file is driven (0 or 1)
-[PASS] _selected forwarded from MEM (A)
-[PASS] 1_selected forwarded from WB (A)
-[PASS] _selected forwarded from MEM (B)
-[PASS] 2_selected forwarded from WB (B)
-[FAIL] when ex_alu_src=0 (ALU uses op2)
-[FAIL]  op1+immediate when ex_alu_src=1
-[FAIL]  op1+op2 when ex_alu_src=0 again
-[PASS]       jump_en is driven (0 or 1)
-[PASS]   pc_jump_addr is driven (not X)
-[PASS] calc_jump_addr is driven (not X)
-=======================================
-EXECUTE_STAGE TB SUMMARY
- PASSED = 10
- FAILED = 4
- OVERALL RESULT: FAIL
-=======================================
-Simulation complete via $finish(1) at time 340 NS + 0
-./tb_excute.v:254         #100 $finish;
+
+============================
+      ALU TESTCASES START
+============================
+
+ncsim: *W,SHMOPEND: $shm_open already done.
+            File: ./tb_excute.v, line = 403, pos = 12
+           Scope: tb_execute_stage
+            Time: 0 FS + 0
+
+ADD   : Expected = 30        , Result = 30
+SUB   : Expected = -10       , Result = -10
+ADDI  : Expected = 75        , Result = 75
+AND   : Expected = 0F000F00  , Result = 0f000f00
+ANDI  : Expected = 00005555  , Result = 00005555
+OR    : Expected = FFFF5678  , Result = ffff5678
+ORI   : Expected = 1234FF78  , Result = 1234ff78
+XOR   : Expected = FFFFFFFF  , Result = ffffffff
+XORI  : Expected = AAAA5555  , Result = aaaa5555
+[PASS] ected equals op1 (no forwarding)
+[PASS] ected equals op2 (no forwarding)
+[PASS]             wb_rd driven (not X)
+[PASS]      wb_reg_file driven (0 or 1)
+SLL   : Expected = 00000044  , Result = 00000044
+SLLI  : Expected = 00000044  , Result = 00000044
+SRL   : Expected = 08000000  , Result = 08000000
+SRLI  : Expected = 08000000  , Result = 08000000
+SRA   : Expected = FFFFFC    , Result = fffffffc
+SRAI  : Expected = FFFFFFFC  , Result = fffffffc
+SLT   : Expected = 1         , Result = 1
+SLTI  : Expected = 1         , Result = 1
+SLTU  : Expected = 0         , Result = 0
+SLTIU : Expected = 0         , Result = 0
+
+============================
+    ALL TESTCASES COMPLETE
+============================
+
+Simulation complete via $finish(1) at time 19 NS + 0
+./tb_alu_top.v:151         $finish;
 ncsim> exit
-TOOL:	irun(64)	15.20-s051: Exiting on Mar 29, 2019 at 01:59:59 IST  (total: 00:00:01)
+TOOL:	irun(64)	15.20-s051: Exiting on Mar 29, 2019 at 03:10:27 IST  (total: 00:00:00)

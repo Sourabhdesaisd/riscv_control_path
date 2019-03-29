@@ -1,0 +1,10 @@
+//
+// File created by:  irun
+// Do not modify this file
+//
+-access
++rwc
+ex_mem_pipeline.v
+id_ex_pipeline.v
+if_id_pipeline.v
+mem_wb_pipeline.v

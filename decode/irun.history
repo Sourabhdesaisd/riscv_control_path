@@ -12,3 +12,6 @@ s11(27Mar2019:09:40:42):  irun -access +rwc register_file.v tb_reg_file.v
 s12(27Mar2019:09:47:13):  irun -access +rwc register_file.v tb_reg_file.v 
 s13(27Mar2019:09:49:46):  irun -access +rwc decode_stage.v tb_decode_s.v 
 s14(27Mar2019:09:50:49):  irun -access +rwc decode_stage.v tb_decode_s.v 
+s15(29Mar2019:04:09:53):  irun -access +rwc decode_controller.v tb_decode_con.v 
+s16(29Mar2019:04:11:39):  irun -access +rwc decode_controller.v tb_decode_con.v 
+s17(29Mar2019:04:12:31):  irun -access +rwc decode_controller.v tb_decode_con.v 

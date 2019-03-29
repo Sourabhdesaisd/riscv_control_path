@@ -1,0 +1,14 @@
+//
+// File created by:  irun
+// Do not modify this file
+//
+-access
++rwc
+btb_file.v
+btb_read.v
+btb.v
+btb_write.v
+dynamic_branch_predictor.v
+lru_next.v
+lru_reg.v
+tb_btb.v

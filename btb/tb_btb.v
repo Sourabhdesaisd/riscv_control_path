@@ -1,0 +1,119 @@
+
+
+module btb_tb;
+
+  // Inputs
+  reg clk;
+  reg rst;
+  reg [31:0] pc;
+  reg [31:0] update_pc;
+  reg update;
+  reg [31:0] update_target;
+  reg mispredicted;
+
+  // Outputs
+  wire [31:0] target_pc;
+  wire valid;
+  wire predictedTaken;
+
+  // Instantiate the DUT
+  btb dut (
+    .clk(clk),
+    .rst(rst),
+    .pc(pc),
+    .update_pc(update_pc),
+    .update(update),
+    .update_target(update_target),
+    .mispredicted(mispredicted),
+    .target_pc(target_pc),
+    .valid(valid),
+    .predictedTaken(predictedTaken)
+  );
+
+  // Clock generation
+  initial clk = 0;
+  always #5 clk = ~clk; // 100MHz clock
+   initial begin
+    $shm_open("wave.shm");
+    $shm_probe("ACTMF");
+    end
+
+
+  // Test vectors
+  initial begin
+    // Reset
+    rst = 1;
+    update = 0;
+    pc = 0;
+    update_pc = 0;
+    update_target = 0;
+    mispredicted = 0;
+    #15;
+    rst = 0;
+
+    // Example: Write first entry to BTB
+    pc = 32'h000A0000;
+    #10;
+    update_pc = 32'h000A0000;
+    update_target = 32'h000A0020;
+    update = 1;
+    mispredicted = 0;
+    #10;
+    update = 0;
+
+    // Check that BTB predicts correctly
+    pc = 32'h000A0000;
+    #10;
+
+    // Add second entry
+    pc = 32'h000B0000;
+    update_pc = 32'h000B0000;
+    update_target = 32'h000B0020;
+    update = 1;
+    #10;
+    update = 0;
+
+    // Check first and second entry
+    pc = 32'h000A0000;
+    #10;
+
+    pc = 32'h000B0000;
+    #10;
+
+    // Test misprediction
+    pc = 32'h000A0000;
+    mispredicted = 1;
+    update = 1;
+    #20;
+    update = 0;
+    mispredicted = 0;
+    #10;
+    pc = 32'h000C0000;
+    #20
+
+    // Add third entry
+    pc = 32'h000C0000;
+    update_pc = 32'h000C0000;
+    update_target = 32'h000D0020;
+    update = 1;
+    #10;
+    update = 0;
+
+    // Check first, second, third entry
+    pc = 32'h000A0000;
+    #10;
+
+    pc = 32'h000B0000;
+    #10;
+
+    pc = 32'h000C0000;
+    #10;
+
+
+    // Finish simulation
+    #50;
+    $finish;
+  end
+
+endmodule
+

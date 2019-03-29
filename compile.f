@@ -1,41 +1,53 @@
++incdir+./
++incdir+./btb
++incdir+./fetch
++incdir+./decode
++incdir+./execute
++incdir+./memory
++incdir+./writeback
++incdir+./pipeline
 
+define.vh
 
-btb_file.v
-btb_read.v
-btb_top.v
-btb_write.v
+# BTB
+btb/btb.v
+btb/btb_read.v
+btb/btb_write.v
+btb/dynamic_branch_predictor.v
 
-dynamic_branch_predictor.v
-lru_next.v
-lru_reg.v
+# Fetch
+fetch/pc.v
+fetch/pc_update.v
+fetch/fetch_stage.v
 
-ex_mem_pipeline.v
-id_ex_pipeline.v
-if_id_pipeline.v
-mem_wb_pipeline.v
+# Decode
+decode/register_file.v
+decode/decode_controller.v
+decode/decode_stage.v
 
-writeback_stage.v
-mem_stage.v
-data_mem.v
+# Execute
+excute/alu_top.v
+excute/pc_jump.v
+excute/execute_stage.v
 
-alu.v
-alu_control.v
+# Memory
+memory/data_mem.v
+memory/mem_stage.v
 
-execute_stage.v
-pc_jump.v
-pc_update.v
+# Writeback
+writeback/writeback_stage.v
 
-decode_controller.v
-decode_stage.v
-register_file.v
+# Pipeline Registers
+pipeline/if_id_pipeline.v
+pipeline/id_ex_pipeline.v
+pipeline/ex_mem_pipeline.v
+pipeline/mem_wb_pipeline.v
 
-fetch_stage.v
-instruction_mem.v
-
-pc.v
-rv32i_core.v
-hazard_unit.v
+# Hazard + forwarding
 forwarding_unit.v
+hazard_unit.v
 
+# Top and TB
+rv32i_core.v
+rv32i_core_tb.v
 
- rv32i_core_tb.sv

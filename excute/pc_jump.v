@@ -1,4 +1,3 @@
-//`include "defines.vh"
 // OPCODES
 `define OPCODE_RTYPE 7'b0110011
 `define OPCODE_ITYPE 7'b0010011
@@ -13,9 +12,6 @@
 // FUNC7 - ADD
 `define FUNC7_ADD 7'b0000000
 `define FUNC7_SUB 7'b0100000
-
-// FUNC7 - M Unit
-`define FUNC7_M_UNIT 7'b0000001
 
 // ALU Codes
 `define ALU_ADD  4'b0000
@@ -65,7 +61,6 @@
 `define WEAK_NOT_TAKEN   2'b01
 `define STRONG_TAKEN     2'b10
 `define WEAK_TAKEN       2'b11
-
 
 /*module pc_jump(
     input [31:0] pc,

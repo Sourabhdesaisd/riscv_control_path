@@ -1,9 +1,9 @@
 irun(64): 15.20-s051: (c) Copyright 1995-2018 Cadence Design Systems, Inc.
-TOOL:	irun(64)	15.20-s051: Started on Mar 27, 2019 at 09:50:49 IST
+TOOL:	irun(64)	15.20-s051: Started on Mar 29, 2019 at 04:12:31 IST
 irun
 	-access +rwc
-	decode_stage.v
-	tb_decode_s.v
+	decode_controller.v
+	tb_decode_con.v
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
 |
 irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied '/tools/cadence/FOUNDRY/analog/45nm/gpdk045' (cds.lib command ignored).
@@ -28,9 +28,15 @@ irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied '
 DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 |
 irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
-Recompiling... reason: file './tb_decode_s.v' is newer than expected.
-	expected: Wed Mar 27 09:49:42 2019
-	actual:   Wed Mar 27 09:50:47 2019
+DEFINE gpdk045		$ANALOG/45nm/gpdk045		
+|
+irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied '/tools/cadence/FOUNDRY/analog/45nm/gpdk045' (cds.lib command ignored).
+DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
+|
+irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
+Recompiling... reason: file './decode_controller.v' is newer than expected.
+	expected: Wed Mar 27 08:28:02 2019
+	actual:   Fri Mar 29 04:08:06 2019
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
 |
 irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied '/tools/cadence/FOUNDRY/analog/45nm/gpdk045' (cds.lib command ignored).
@@ -43,8 +49,8 @@ ncvlog: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied
 DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 |
 ncvlog: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
-file: tb_decode_s.v
-	module worklib.tb_decode_stage:v
+file: tb_decode_con.v
+	module worklib.tb_decode_controller:v
 		errors: 0, warnings: 0
 	Total errors/warnings found outside modules and primitives:
 		errors: 0, warnings: 2
@@ -68,9 +74,8 @@ DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 ncelab: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
 		Caching library 'worklib' ....... Done
 	Elaborating the design hierarchy:
-		Caching library 'worklib' ....... Done
 	Top level design units:
-		tb_decode_stage
+		tb_decode_controller
 	Building instance overlay tables: .................... Done
 	Generating native compiled code:
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
@@ -79,48 +84,59 @@ ncvlog_cg: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission den
 DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 |
 ncvlog_cg: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
-		worklib.tb_decode_stage:v <0x637254e6>
-			streams:  15, words: 23652
+		worklib.decode_controller:v <0x102caeb7>
+			streams:   4, words:  2343
+		worklib.tb_decode_controller:v <0x169fa070>
+			streams:   6, words: 20341
 	Building instance specific data structures.
 	Loading native compiled code:     .................... Done
 	Design hierarchy summary:
 		              Instances  Unique
-		Modules:              4       4
-		Registers:           32      32
-		Scalar wires:        17       -
-		Vectored wires:      17       -
-		Always blocks:        5       5
-		Initial blocks:       5       5
-		Cont. assignments:    8      24
-		Pseudo assignments:   7       7
-	Writing initial simulation snapshot: worklib.tb_decode_stage:v
+		Modules:              2       2
+		Registers:            9       9
+		Scalar wires:        14       -
+		Vectored wires:       5       -
+		Always blocks:        2       2
+		Initial blocks:       2       2
+		Cont. assignments:    2      13
+		Pseudo assignments:   3       3
+	Writing initial simulation snapshot: worklib.tb_decode_controller:v
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
 |
 ncsim: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied '/tools/cadence/FOUNDRY/analog/45nm/gpdk045' (cds.lib command ignored).
 DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 |
 ncsim: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
-Loading snapshot worklib.tb_decode_stage:v .................... Done
+Loading snapshot worklib.tb_decode_controller:v .................... Done
 ncsim> source /tools/cadence/INCISIVE152/tools/inca/files/ncsimrc
 ncsim> run
-[PASS] ype immediate sign-extend (ADDI)
-[PASS]      S-type immediate build (SB)
-[PASS]    mem_write asserted for S-type
-[PASS]      S-type immediate build (SH)
-[PASS]       id_flush forces NOP decode
-[PASS]           wb_load true for ILOAD
-[PASS]   mem_load_type LB for func3=000
-[PASS]  mem_load_type LBU for func3=100
-[PASS] ead after write (x5 == DEADBEEF)
-[PASS] ing: read forwarded value for x9
-[PASS]  asserted for unsupported opcode
-=======================================
-DECODE_STAGE TB SUMMARY
- PASSED = 11
- FAILED = 0
- OVERALL RESULT: PASS
-=======================================
-Simulation complete via $finish(1) at time 140 NS + 0
-./tb_decode_s.v:230         $finish;
+[PASS]                                                                                                                                                                 R-type (ADD) should writeback to regfile
+[FAIL]                                                                                                                                            R-type (ADD) should NOT set alu_src (immediate) by controller
+[PASS]                                                                                                                                                                                   R-type should be valid
+[PASS]                                                                                                                                                                 R-type (SUB) should writeback to regfile
+[PASS]                                                                                                                                                                               R-type SUB should be valid
+[PASS]                                                                                                                                                               I-type ALU immediate should set ex_alu_src
+[PASS]                                                                                                                                                                    I-type ALU immediate should writeback
+[FAIL]                                                                                                                                                                       Load opcode should assert mem_read
+[FAIL]                                                                                                                                                                     Load uses ALU immediate/address calc
+[FAIL]                                                                                                                                                                              Loads write back to regfile
+[PASS]                                                                                                                                                                     Store opcode should assert mem_write
+[PASS]                                                                                                                                                                              Store func3=000 -> STORE_SB
+[PASS]                                                                                                                                                                              Store func3=001 -> STORE_SH
+[PASS]                                                                                                                                                                              Store func3=010 -> STORE_SW
+[PASS]                                                                                                                                                                Branch should be a valid instruction type
+[PASS]                                                                                                                                                                            JAL should assert wb_reg_file
+[PASS]                                                                                                                                                                                 AUIPC should set ALU src
+[PASS]                                                                                                                                                                                  AUIPC should write back
+[PASS]                                                                                                                                                                                   JALR should write back
+[PASS]                                                                                                                                                                                  JALR should set ALU src
+[FAIL]                                                                                                                                                                   Unknown opcode should set invalid_inst
+=== decode_controller TB SUMMARY ===
+ PASSED = 16
+ FAILED = 5
+ RESULT: FAIL
+====================================
+Simulation complete via $finish(1) at time 117 NS + 0
+./tb_decode_con.v:141        #100  $finish;
 ncsim> exit
-TOOL:	irun(64)	15.20-s051: Exiting on Mar 27, 2019 at 09:50:49 IST  (total: 00:00:00)
+TOOL:	irun(64)	15.20-s051: Exiting on Mar 29, 2019 at 04:12:31 IST  (total: 00:00:00)

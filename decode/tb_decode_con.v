@@ -22,7 +22,7 @@ module tb_decode_controller;
     wire mem_write;
     wire [2:0] mem_load_type;
     wire [1:0] mem_store_type;
-    wire wb_load;
+    wire mem_read;
     wire wb_reg_file;
     wire invalid_inst;
 
@@ -37,7 +37,7 @@ module tb_decode_controller;
         .mem_write(mem_write),
         .mem_load_type(mem_load_type),
         .mem_store_type(mem_store_type),
-        .wb_load(wb_load),
+        .mem_read(mem_read),
         .wb_reg_file(wb_reg_file),
         .invalid_inst(invalid_inst)
     );
@@ -87,10 +87,10 @@ module tb_decode_controller;
         CHECK(ex_alu_src == 1'b1, "I-type ALU immediate should set ex_alu_src");
         CHECK(wb_reg_file == 1'b1, "I-type ALU immediate should writeback");
 
-        // Test 4: Load -> wb_load=1, ex_alu_src=1, wb_reg_file=1
+        // Test 4: Load -> mem_read=1, ex_alu_src=1, wb_reg_file=1
         opcode = OPCODE_ILOAD; func3 = 3'b010; func7 = 7'b0000000;
         #1;
-        CHECK(wb_load == 1'b1, "Load opcode should assert wb_load");
+        CHECK(mem_read == 1'b1, "Load opcode should assert mem_read");
         CHECK(ex_alu_src == 1'b1, "Load uses ALU immediate/address calc");
         CHECK(wb_reg_file == 1'b1, "Loads write back to regfile");
 
