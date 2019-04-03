@@ -11,12 +11,12 @@ module register_file (
     output wire [31:0] op1,
     output wire [31:0] op2
 );
-    reg [31:0] reg_file [31:0];
+    reg [31:0] reg_file [0:31];
 
     wire [31:0] op1_forwarded;
     wire [31:0] op2_forwarded;
     initial begin
-        $readmemh("reg_hex_file.hex", reg_file);
+        $readmemh("reg_mem.hex", reg_file);
     end
 
     // Operand forwarding if read and write addr are same

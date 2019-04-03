@@ -18,7 +18,7 @@ module rv32i_core_tb;
 
     // Clock generation: 10ns period
     initial begin
-        clk = 0;
+        clk = 1;
         forever #5 clk = ~clk;
     end
 
@@ -30,7 +30,7 @@ module rv32i_core_tb;
         rst = 0;
 
         // Run simulation for 500ns then finish
-        #20000;
+        #500;
         $finish;
     end
 endmodule

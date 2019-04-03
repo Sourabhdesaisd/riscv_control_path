@@ -5,4 +5,7 @@
 -access
 +rwc
 data_mem.v
-tb_data.v
+load.v
+memory_1kb.v
+mem_stage.v
+store.v

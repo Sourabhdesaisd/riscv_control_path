@@ -36,14 +36,14 @@ module fetch_stage(
 
     // Instantiate the instruction memory module
     inst_mem instruction_mem_inst (
-        .clk(clk),
-        .rst(rst),
+        //.clk(clk),
+       // .rst(rst),
         .pc(pc),
-        .read_en(pc_en),
-        .write_en(1'b0),
-        .flush(flush),
-        .write_addr(8'hff),
-        .write_data(32'h00000000),
+     //   .read_en(pc_en),
+       // .write_en(1'b0),
+       // .flush(flush),
+          .write_addr(pc[11:2]),
+       // .write_data(32'h00000000),
         .instruction(instruction)
     );
 

@@ -195,52 +195,7 @@ alu_top alu_top_inst (
     .overflow_flag(overflow_flag)
 );
       
-   ripple_carry_adder_alu ADD_UNIT (
-        .op1(op1),
-        .op2(op2),
-        .sub(is_sub),          // select ADD or SUB
-        .result_alu(add_res),
-        .carry_flag(carry_flag),
-        .zero_flag(zero_flag),
-        .negative_flag(negative_flag),
-        .overflow_flag(overflow_flag)
-    );
-
-    //----------------------------------------------------------
-    // SHIFTER
-    //----------------------------------------------------------
-    shift_op_alu SHIFT_UNIT (
-        .op1(op1),
-        .op2(op2),
-        .opcode(opcode),
-        .func3(func3),
-        .func7(func7),
-        .imm(imm),
-        .result_alu(shift_res)
-    );
-
-    //----------------------------------------------------------
-    // LOGICAL UNIT
-    //----------------------------------------------------------
-    logical_op_alu LOGIC_UNIT (
-        .op1(op1),
-        .op2(op2),
-        .opcode(opcode),
-        .func3(func3),
-        .result_alu(logic_res)
-    );
-
-    //----------------------------------------------------------
-    // COMPARATOR UNIT
-    //----------------------------------------------------------
-    comparator_alu COMP_UNIT (
-        .op1(op1),
-        .op2(op2),
-        .opcode(opcode),
-        .func3(func3),
-        .result_alu(comp_res)
-    );
-//assign alu_result= result_alu;
+  //assign alu_result= result_alu;
 assign wb_reg_file = ex_wb_reg_file; // temp dont use in pipeline
 assign wb_rd       = alu_rd;
    

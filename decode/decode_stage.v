@@ -74,26 +74,26 @@ module decode_stage(
     input [4:0] reg_file_wr_addr,
     input [31:0] reg_file_wr_data,
     
-    output wire [31:0] op1,
-    output wire [31:0] op2,
-    output wire [4:0] rs1,
-    output wire [4:0] rs2,
-    output wire [4:0] rd,
+    output [31:0] op1,
+    output [31:0] op2,
+    output [4:0] rs1,
+    output [4:0] rs2,
+    output [4:0] rd,
     output reg [31:0] immediate,
-    output wire [6:0] opcode,
-    output wire alu_src,
-    output wire invalid_inst,
-    output wire [6:0] func7,
-    output wire [2:0] func3,
-    output wire mem_write,
-    output wire [2:0] mem_load_type,
-    output wire[1:0] mem_store_type,
-    output wire wb_load,
-    output wire wb_reg_file
+    output [6:0] opcode,
+    output alu_src,
+    output invalid_inst,
+    output [6:0] func7,
+    output [2:0] func3,
+    output mem_write,
+    output mem_read,
+    output [2:0] mem_load_type,
+    output[1:0] mem_store_type,
+    output wb_reg_file
 );
     wire [31:0] instruction;
 
-    assign instruction = id_flush ? 32'h00000013 : instruction_in;
+    assign instruction = id_flush ? 32'h00000000 : instruction_in;
 
     assign opcode = instruction[6:0];
     assign rd = instruction[11:7];
@@ -126,9 +126,9 @@ module decode_stage(
         .func7(func7),
         .ex_alu_src(alu_src),
         .mem_write(mem_write),
+        .mem_read(mem_read),
         .mem_load_type(mem_load_type),
         .mem_store_type(mem_store_type),
-        .wb_load(wb_load),
         .wb_reg_file(wb_reg_file),
         .invalid_inst(invalid_inst)    );
 

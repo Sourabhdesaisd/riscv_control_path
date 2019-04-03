@@ -1,53 +1,58 @@
 +incdir+./
-+incdir+./btb
 +incdir+./fetch
 +incdir+./decode
 +incdir+./execute
 +incdir+./memory
 +incdir+./writeback
 +incdir+./pipeline
++incdir+./btb
 
-define.vh
 
-# BTB
 btb/btb.v
+btb/btb_file.v
 btb/btb_read.v
 btb/btb_write.v
 btb/dynamic_branch_predictor.v
+btb/lru_next.v
+btb/lru_reg.v
 
-# Fetch
 fetch/pc.v
 fetch/pc_update.v
 fetch/fetch_stage.v
+fetch/inst_mem.v
+fetch/instruction_mem_B0.v
+fetch/instruction_mem_B1.v
+fetch/instruction_mem_B2.v
+fetch/instruction_mem_B3.v
 
-# Decode
 decode/register_file.v
 decode/decode_controller.v
 decode/decode_stage.v
 
-# Execute
 excute/alu_top.v
+excute/comparator_alu.v
+excute/logical_op_alu.v
+excute/shift_op_alu.v
+excute/ripple_carry_adder_alu.v
 excute/pc_jump.v
 excute/execute_stage.v
 
-# Memory
 memory/data_mem.v
 memory/mem_stage.v
+memory/memory_1kb.v
+memory/load.v
+memory/store.v
 
-# Writeback
 writeback/writeback_stage.v
 
-# Pipeline Registers
 pipeline/if_id_pipeline.v
 pipeline/id_ex_pipeline.v
 pipeline/ex_mem_pipeline.v
 pipeline/mem_wb_pipeline.v
 
-# Hazard + forwarding
 forwarding_unit.v
 hazard_unit.v
 
-# Top and TB
 rv32i_core.v
 rv32i_core_tb.v
 

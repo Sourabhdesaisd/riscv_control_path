@@ -3,3 +3,6 @@ s2(29Mar2019:03:16:08):  irun -access +rwc data_mem.v tb_data.v
 s3(29Mar2019:03:16:47):  irun -access +rwc data_mem.v tb_data.v 
 s4(29Mar2019:03:22:12):  irun -access +rwc data_mem.v tb_data.v 
 s5(29Mar2019:03:34:40):  irun -access +rwc data_mem.v tb_data.v 
+s6(30Mar2019:06:43:30):  irun -access +rwc data_mem.v load.v memory_1kb.v mem_stage.v store.v 
+s7(30Mar2019:06:44:36):  irun -access +rwc data_mem.v load.v memory_1kb.v mem_stage.v store.v 
+s8(30Mar2019:06:45:32):  irun -access +rwc data_mem.v load.v memory_1kb.v mem_stage.v store.v 

@@ -63,7 +63,6 @@ module btb(
 
     btb_file btb_file_inst(
         .clk(clk),
-        //.reset(rst),
         .read_index(read_index),
         .update_index(update_index),
         .write_index(reg_write_index),

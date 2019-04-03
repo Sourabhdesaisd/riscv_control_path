@@ -6,7 +6,10 @@
 ./INCA_libs/irun.lnx8664.15.20.nc
 -RUNMODE
 data_mem.v
-tb_data.v
+load.v
+memory_1kb.v
+mem_stage.v
+store.v
 -CDSLIB
 ./INCA_libs/irun.lnx8664.15.20.nc/cdsrun.lib
 -HDLVAR

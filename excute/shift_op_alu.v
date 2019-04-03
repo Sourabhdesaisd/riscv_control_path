@@ -77,7 +77,7 @@ module shift_op_alu (
     always @(*) begin
 
         // shamt selection
-        if (opcode == ``OPCODE_RTYPE)
+        if (opcode == `OPCODE_RTYPE)
             shamt = op2[4:0];
         else if (opcode == `OPCODE_ITYPE)
             shamt = imm[4:0];
@@ -90,7 +90,7 @@ module shift_op_alu (
             // SLL / SLLI
             // =====================================================
             3'b001: begin
-                if (opcode == ``OPCODE_RTYPE && func7 == 7'b0000000)
+                if (opcode == `OPCODE_RTYPE && func7 == 7'b0000000)
                     result_alu = op1 << shamt;
 
                 else if (opcode == `OPCODE_ITYPE && imm[11:5] == 7'b0000000)
@@ -106,7 +106,7 @@ module shift_op_alu (
             3'b101: begin
 
                 // SRL (logical)
-                if (opcode == ``OPCODE_RTYPE && func7 == 7'b0000000)
+                if (opcode == `OPCODE_RTYPE && func7 == 7'b0000000)
                     result_alu = op1 >> shamt;
 
                 else if (opcode == `OPCODE_ITYPE && imm[11:5] == 7'b0000000)

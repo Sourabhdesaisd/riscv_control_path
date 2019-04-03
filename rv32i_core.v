@@ -49,7 +49,7 @@ module rv32i_core(
     wire        id_mem_write, ex_mem_write;
     wire [2:0]  id_mem_load_type, ex_mem_load_type;
     wire [1:0]  id_mem_store_type, ex_mem_store_type;
-    wire        id_wb_load, ex_wb_load;
+    wire        id_mem_read, ex_mem_read;
     wire        id_wb_reg_file, ex_wb_reg_file;
     wire        id_pred_taken, ex_pred_taken;
     wire        ex_forward_pipeline_flush;
@@ -67,7 +67,7 @@ module rv32i_core(
     wire        mem_memory_write;
     wire [2:0]  mem_memory_load_type;
     wire [1:0]  mem_memory_store_type;
-    wire        mem_wb_load;
+    wire        mem_mem_read;
     wire        mem_wb_reg_file;
 
     // MEM/WB Connection
@@ -75,7 +75,7 @@ module rv32i_core(
     wire [31:0] mem_calculated_result, wb_calculated_result;
     wire [4:0]  wb_rd;
     wire        wb_reg_file;
-    wire        wb_load;
+    wire        mem_read;
     wire [31:0] wb_result;
 
 
@@ -148,7 +148,7 @@ module rv32i_core(
         .mem_write(id_mem_write),
         .mem_load_type(id_mem_load_type),
         .mem_store_type(id_mem_store_type),
-        .wb_load(id_wb_load),
+        .mem_read(id_mem_read),
         .wb_reg_file(id_wb_reg_file)
     );
 
@@ -171,7 +171,7 @@ module rv32i_core(
         .id_mem_write(id_mem_write),
         .id_mem_load_type(id_mem_load_type),
         .id_mem_store_type(id_mem_store_type),
-        .id_wb_load(id_wb_load),
+        .id_mem_read(id_mem_read),
         .id_wb_reg_file(id_wb_reg_file),
         .id_rs1(id_rs1),
         .id_rs2(id_rs2),
@@ -179,9 +179,7 @@ module rv32i_core(
         .id_pred_taken(id_pred_taken),
 
         .ex_forward_pipeline_flush(ex_forward_pipeline_flush),
-        .ex_invalid_inst(m_unit_invalid_inst),
-        .ex_instruction(m_unit_instruction),
-        .ex_pc(ex_pc),
+         .ex_pc(ex_pc),
         .ex_op1(ex_op1),
         .ex_op2(ex_op2),
         .ex_immediate(ex_immediate),
@@ -192,7 +190,7 @@ module rv32i_core(
         .ex_mem_write(ex_mem_write),
         .ex_mem_load_type(ex_mem_load_type),
         .ex_mem_store_type(ex_mem_store_type),
-        .ex_wb_load(ex_wb_load),
+        .ex_mem_read(ex_mem_read),
         .ex_wb_reg_file(ex_wb_reg_file),
         .ex_rs1(ex_rs1),
         .ex_rs2(ex_rs2),
@@ -225,7 +223,7 @@ module rv32i_core(
         .opcode(ex_opcode),
         .ex_alu_src(ex_alu_src),
         .predictedTaken(ex_pred_taken),
-        .invalid_inst(m_unit_invalid_inst),
+        .invalid_inst(invalid_inst),
         .ex_wb_reg_file(ex_wb_reg_file),
     //    .m_unit_result(m_unit_result),
     //    .m_unit_wr(m_unit_wr),
@@ -237,7 +235,7 @@ module rv32i_core(
         .data_forward_mem(mem_result),
         .data_forward_wb(wb_result),
         .result_alu(ex_result),
-        .op1_selected(m_unit_op1),
+        .op1_selected(op1_selected),
         .op2_selected(ex_op2_selected),
         .pc_jump_addr(ex_if_pc_jump_addr),
         .jump_en(ex_if_jump_en),
@@ -253,7 +251,7 @@ module rv32i_core(
         .id_rs2(id_rs2),
         .opcode(id_opcode),
         .ex_rd(ex_wb_rd),
-        .ex_load_inst(ex_wb_load),
+        .ex_load_inst(ex_mem_read),
         .jump_branch_taken(ex_if_jump_en),
         .invalid_inst(invalid_inst),
      //   .stall(m_unit_busy || m_unit_ready),
@@ -269,22 +267,22 @@ module rv32i_core(
     ex_mem_pipeline ex_mem_pipeline_inst (
         .clk(clk),
         .rst(rst),
-       // .pipeline_en(!m_unit_busy),
+        .pipeline_en(id_ex_pipeline_en),        
         .ex_result(ex_result),
         .ex_op2_selected(ex_op2_selected),
         .ex_memory_write(ex_mem_write),
         .ex_memory_load_type(ex_mem_load_type),
         .ex_memory_store_type(ex_mem_store_type),
-        .ex_wb_load(ex_wb_load),
+        .ex_mem_read(ex_mem_read),
         .ex_wb_reg_file(alu_wb),
         .ex_wb_rd(alu_rd),
-
+        .ex_forward_pipeline_flush(ex_forward_pipeline_flush),
         .mem_result(mem_result),
         .mem_op2_selected(mem_op2_selected),
         .mem_memory_write(mem_memory_write),
         .mem_memory_load_type(mem_memory_load_type),
         .mem_memory_store_type(mem_memory_store_type),
-        .mem_wb_load(mem_wb_load),
+        .mem_mem_read(mem_mem_read),
         .mem_wb_reg_file(mem_wb_reg_file),
         .mem_wb_rd(mem_wb_rd)
     );
@@ -293,9 +291,10 @@ module rv32i_core(
     mem_stage mem_stage_inst (
         .clk(clk),
         .rst(rst),
-        .result(mem_result),
+        .result_alu(mem_result),
         .op2_data(mem_op2_selected),
         .mem_write(mem_memory_write),
+        .mem_read(mem_mem_read),
         .store_type(mem_memory_store_type),
         .load_type(mem_memory_load_type),
         .read_data(mem_read_data),
@@ -306,12 +305,12 @@ module rv32i_core(
     mem_wb_pipeline mem_wb_pipeline_inst (
         .clk(clk),
         .rst(rst),
-        .mem_wb_load(mem_wb_load),
+        .mem_mem_read(mem_mem_read),
         .mem_wb_reg_file(mem_wb_reg_file),
         .mem_read_data(mem_read_data),
         .mem_calculated_result(mem_calculated_result),
         .mem_wb_rd(mem_wb_rd),
-        .wb_load(wb_load),
+        .mem_read(mem_read),
         .wb_reg_file(wb_reg_file),
         .wb_read_data(wb_read_data),
         .wb_calculated_result(wb_calculated_result),
@@ -320,10 +319,11 @@ module rv32i_core(
 
     // Instantiate the Write Back stage module
     writeback_stage writeback_stage_inst (
-        .wb_load(wb_load),
+        .mem_read(mem_read),
         .mem_read_data(wb_read_data),
-        .alu_result(wb_calculated_result),
+        .result_alu(wb_calculated_result),
         .wb_result(wb_result)
     );
 
+     
 endmodule

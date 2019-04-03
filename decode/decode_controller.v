@@ -68,9 +68,9 @@ module decode_controller (
     input [6:0] func7,
     output ex_alu_src,
     output mem_write,
+    output mem_read,
     output reg [2:0] mem_load_type,
     output reg [1:0] mem_store_type,
-    output wb_load,
     output wb_reg_file,
     output invalid_inst
 );
@@ -87,17 +87,17 @@ module decode_controller (
     assign r_type_inst = (wb_inst && (func7 == `FUNC7_ADD || func7 == `FUNC7_SUB));
     assign i_type_inst = (opcode == `OPCODE_ITYPE);
     assign mem_write = (opcode == `OPCODE_STYPE);
-    assign wb_load = (opcode == `OPCODE_ILOAD);
+    assign mem_read = (opcode == `OPCODE_ILOAD);
     assign u_type_inst = (opcode == `OPCODE_UTYPE);
     assign b_type_inst = (opcode == `OPCODE_BTYPE);
     assign j_type_inst = (opcode == `OPCODE_JTYPE);
     assign aupic_inst = ( opcode == `OPCODE_AUIPC);
     assign jalr_inst = (opcode == `OPCODE_IJALR);
 
-    assign ex_alu_src  = i_type_inst || wb_load || mem_write ||
+    assign ex_alu_src  = i_type_inst || mem_read || mem_write ||
                           u_type_inst ||aupic_inst || jalr_inst;
 
-    assign wb_reg_file  = wb_inst || i_type_inst || wb_load ||
+    assign wb_reg_file  = wb_inst || i_type_inst || mem_read ||
                           u_type_inst ||aupic_inst || jalr_inst || j_type_inst;
                          
     assign invalid_inst = !(r_type_inst || ex_alu_src ||
@@ -117,7 +117,7 @@ module decode_controller (
 
     always @(*) begin
         mem_load_type = `LOAD_DEF; // Load full value
-        if (wb_load) begin
+        if (mem_read) begin
             case (func3)
                 3'b000: mem_load_type = `LOAD_LB;
                 3'b001: mem_load_type = `LOAD_HD;

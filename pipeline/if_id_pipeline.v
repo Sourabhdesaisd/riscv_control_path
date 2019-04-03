@@ -11,11 +11,12 @@ module if_id_pipeline(
 
     output reg id_flush,
     output reg [31:0] id_pc,
-    output [31:0] id_instruction,
+    output reg [31:0] id_instruction,
     output reg id_pred_taken
 );
 
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk ) begin
+        
         if (rst) begin
             id_pc <= 32'h00000000;
             id_pred_taken <= 1'b0;
@@ -24,6 +25,7 @@ module if_id_pipeline(
             id_pc <= id_pc;
             id_pred_taken <= 1'b0;
             id_flush <= if_flush;
+
         end else if (pipeline_en) begin
             id_pc <= if_pc;
             id_pred_taken <= if_pred_taken;  
@@ -33,6 +35,13 @@ module if_id_pipeline(
 
     // Instruction is passed directly from fetch stage to decode stage because
     // register already in instruction memory module
-    assign id_instruction = if_instruction;
+     always @(posedge clk ) begin
+        
+        if (rst)
+            id_instruction <= 32'd0 ;
+          else
+          id_instruction <= if_instruction;
+
+      end
 
 endmodule
