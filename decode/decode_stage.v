@@ -114,8 +114,9 @@ module decode_stage(
                 immediate = {instruction[31:12],`ZERO_12BIT};
             `OPCODE_AUIPC: 
                 immediate = {instruction[31:12],`ZERO_12BIT};
-            default:       
+            `OPCODE_ITYPE:       
                 immediate = {{20{instruction[31]}},instruction[31:20]};
+              default: immediate =0 ;
         endcase
     end
     

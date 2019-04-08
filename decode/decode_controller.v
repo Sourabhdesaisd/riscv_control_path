@@ -46,7 +46,7 @@
 
 // Load Types
 `define LOAD_LB  3'b000
-`define LOAD_HD  3'b001
+`define LOAD_LH  3'b001   // FIXED NAME
 `define LOAD_LW  3'b010
 `define LOAD_LBU 3'b011
 `define LOAD_LHU 3'b100
@@ -120,7 +120,7 @@ module decode_controller (
         if (mem_read) begin
             case (func3)
                 3'b000: mem_load_type = `LOAD_LB;
-                3'b001: mem_load_type = `LOAD_HD;
+                3'b001: mem_load_type = `LOAD_LH;
                 3'b010: mem_load_type = `LOAD_LW;
                 3'b100: mem_load_type = `LOAD_LBU;
                 3'b101: mem_load_type = `LOAD_LHU;

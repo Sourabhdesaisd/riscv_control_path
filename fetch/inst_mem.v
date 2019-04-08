@@ -1,4 +1,51 @@
 module inst_mem (
+    input [31:0] pc,
+    input [7:0] write_addr,
+    output  [31:0] instruction
+);
+
+wire [7:0] mem_B0_out;
+wire [7:0] mem_B1_out;
+wire [7:0] mem_B2_out;
+wire [7:0] mem_B3_out;
+
+// Byte memories (256 entries each)
+instruction_mem_B0 mem0 (
+    .write_addr(write_addr),
+    .read_data(mem_B0_out)
+);
+
+instruction_mem_B1 mem1 (
+    .write_addr(write_addr),
+    .read_data(mem_B1_out)
+);
+
+instruction_mem_B2 mem2 (
+    .write_addr(write_addr),
+    .read_data(mem_B2_out)
+);
+
+instruction_mem_B3 mem3 (
+    .write_addr(write_addr),
+    .read_data(mem_B3_out)
+);
+
+// Registered output stage was removed in original (combinational output OK for IF stage)
+assign instruction = {mem_B3_out, mem_B2_out, mem_B1_out, mem_B0_out};
+
+endmodule
+
+
+
+
+
+
+
+
+
+
+
+/*module inst_mem (
   //  input clk,
    // input rst,
     input [31:0] pc,
@@ -49,18 +96,18 @@ instruction_mem_B3 mem3 (
 );
 
 // Registered output stage (pipeline-safe)
-/*always @(posedge clk) begin
+// always @(posedge clk) begin
     if (rst)
         instruction = 32'h00000000;
     else if (flush)
         instruction = 32'h00000000;
     else if (read_en)
       instruction = {mem_B3_out, mem_B2_out, mem_B1_out, mem_B0_out};
-end */
+end 
   assign   instruction = {mem_B3_out, mem_B2_out, mem_B1_out, mem_B0_out};
 
 
-endmodule
+endmodule */
 
 
 

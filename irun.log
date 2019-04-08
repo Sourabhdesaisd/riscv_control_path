@@ -1,5 +1,5 @@
 irun(64): 15.20-s051: (c) Copyright 1995-2018 Cadence Design Systems, Inc.
-TOOL:	irun(64)	15.20-s051: Started on Apr 03, 2019 at 08:00:16 IST
+TOOL:	irun(64)	15.20-s051: Started on Apr 08, 2019 at 03:47:00 IST
 irun
 	-access +rwc
 	-f compile.f
@@ -74,9 +74,9 @@ irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied '
 DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 |
 irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
-Recompiling... reason: file './rv32i_core_tb.v' is newer than expected.
-	expected: Wed Apr  3 07:38:12 2019
-	actual:   Wed Apr  3 08:00:14 2019
+Recompiling... reason: file './excute/execute_stage.v' is newer than expected.
+	expected: Mon Apr  8 03:44:37 2019
+	actual:   Mon Apr  8 03:46:58 2019
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
 |
 irun: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission denied '/tools/cadence/FOUNDRY/analog/45nm/gpdk045' (cds.lib command ignored).
@@ -90,19 +90,27 @@ DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 |
 ncvlog: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
 ncvlog: *W,NOTIND: unable to access -INCDIR ./execute (No such file or directory).
+file: fetch/fetch_stage.v
+wire [31:0] corrected_pc;
+                       |
+ncvlog: *W,ILLPDX (fetch/fetch_stage.v,68|23): Multiple declarations for a port not allowed in module with ANSI list of port declarations (port 'corrected_pc') [12.3.4(IEEE-2001)].
+    wire [31:0] next_pc;
+                      |
+ncvlog: *W,ILLPDX (fetch/fetch_stage.v,81|22): Multiple declarations for a port not allowed in module with ANSI list of port declarations (port 'next_pc') [12.3.4(IEEE-2001)].
+file: excute/execute_stage.v
+	module worklib.execute_stage:v
+		errors: 0, warnings: 0
 file: rv32i_core.v
     wire pc_en;
              |
 ncvlog: *W,ILLPDX (rv32i_core.v,20|13): Multiple declarations for a port not allowed in module with ANSI list of port declarations (port 'pc_en') [12.3.4(IEEE-2001)].
     wire [31:0] ex_result, mem_result;
                         |
-ncvlog: *W,ILLPDX (rv32i_core.v,64|24): Multiple declarations for a port not allowed in module with ANSI list of port declarations (port 'ex_result') [12.3.4(IEEE-2001)].
+ncvlog: *W,ILLPDX (rv32i_core.v,63|24): Multiple declarations for a port not allowed in module with ANSI list of port declarations (port 'ex_result') [12.3.4(IEEE-2001)].
     wire [31:0] wb_result;
                         |
-ncvlog: *W,ILLPDX (rv32i_core.v,79|24): Multiple declarations for a port not allowed in module with ANSI list of port declarations (port 'wb_result') [12.3.4(IEEE-2001)].
+ncvlog: *W,ILLPDX (rv32i_core.v,78|24): Multiple declarations for a port not allowed in module with ANSI list of port declarations (port 'wb_result') [12.3.4(IEEE-2001)].
 file: rv32i_core_tb.v
-	module worklib.rv32i_core_tb:v
-		errors: 0, warnings: 0
 ncvlog: *W,SPDUSD: Include directory ./ given but not used.
 ncvlog: *W,SPDUSD: Include directory ./fetch given but not used.
 ncvlog: *W,SPDUSD: Include directory ./decode given but not used.
@@ -139,14 +147,26 @@ ncelab: (./rv32i_core.v,4): wb_result
 ncelab: (./rv32i_core.v,5): ex_result
 ncelab: (./rv32i_core.v,6): pc_en
 
+    fetch_stage fetch_stage_inst (
+                               |
+ncelab: *W,CUVWSP (./rv32i_core.v,82|31): 1 output port was not connected:
+ncelab: (./fetch/fetch_stage.v,65): corrected_pc
+
+    fetch_stage fetch_stage_inst (
+                               |
+ncelab: *W,CUVWSI (./rv32i_core.v,82|31): 1 input port was not connected:
+ncelab: (./fetch/fetch_stage.v,62): next_pc
+
+    hazard_unit hazard_unit_inst (
+                               |
+ncelab: *W,CUVWSI (./rv32i_core.v,244|31): 1 input port was not connected:
+ncelab: (./hazard_unit.v,72): modify_pc
+
 	Top level design units:
 		rv32i_core_tb
         .op1_selected(op1_selected),
                                  |
-ncelab: *W,CUVMPW (./rv32i_core.v,238|33): port sizes differ in port connection (1/32).
-          .write_addr(pc[11:2]),
-                       |
-ncelab: *W,CUVMPW (./fetch/fetch_stage.v,45|23): port sizes differ in port connection (10/8).
+ncelab: *W,CUVMPW (./rv32i_core.v,233|33): port sizes differ in port connection (1/32).
 	Building instance overlay tables: .................... Done
 	Generating native compiled code:
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
@@ -155,21 +175,21 @@ ncvlog_cg: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,15): cds.lib Permission den
 DEFINE rfLib_new	/home/install/FOUNDRY/rfLib_new
 |
 ncvlog_cg: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/home/install/FOUNDRY/rfLib_new' (cds.lib command ignored).
-		worklib.rv32i_core_tb:v <0x3fd0fbb5>
-			streams:   5, words:  2132
+		worklib.execute_stage:v <0x72ca8efd>
+			streams:   8, words:  3347
 	Building instance specific data structures.
 	Loading native compiled code:     .................... Done
 	Design hierarchy summary:
 		               Instances  Unique
 		Modules:              40      39
-		Registers:            83      82
-		Scalar wires:         90       -
+		Registers:            84      83
+		Scalar wires:         89       -
 		Expanded wires:       64       2
-		Vectored wires:      115       -
-		Always blocks:        31      30
+		Vectored wires:      114       -
+		Always blocks:        30      29
 		Initial blocks:        8       8
 		Cont. assignments:    81     136
-		Pseudo assignments:    9       9
+		Pseudo assignments:    8       8
 	Writing initial simulation snapshot: worklib.rv32i_core_tb:v
 DEFINE gpdk045		$ANALOG/45nm/gpdk045		
 |
@@ -180,8 +200,7 @@ ncsim: *W,DLCPTH (/tools/cadence/FOUNDRY/cds.lib,19): cds.lib Invalid path '/hom
 Loading snapshot worklib.rv32i_core_tb:v .................... Done
 ncsim> source /tools/cadence/INCISIVE152/tools/inca/files/ncsimrc
 ncsim> run
-$readmem error: number too long in file "instruction_mem_B2.hex" at line 31
 Simulation complete via $finish(1) at time 520 NS + 0
 ./rv32i_core_tb.v:34         $finish;
 ncsim> exit
-TOOL:	irun(64)	15.20-s051: Exiting on Apr 03, 2019 at 08:00:17 IST  (total: 00:00:01)
+TOOL:	irun(64)	15.20-s051: Exiting on Apr 08, 2019 at 03:47:00 IST  (total: 00:00:00)

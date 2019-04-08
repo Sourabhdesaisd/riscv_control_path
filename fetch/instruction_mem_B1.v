@@ -1,8 +1,5 @@
 module instruction_mem_B1 (
-  //  input clk,
- //   input write_en,
     input [7:0] write_addr,
-  //  input [7:0] write_data,
     output  [7:0] read_data
 );
 
@@ -12,15 +9,8 @@ initial begin
     $readmemh("instruction_mem_B1.hex", mem);
 end
 
-/* always @(posedge clk) begin
-    if (write_en)
-        mem[write_addr] <= write_data;
-
-    read_data <= mem[write_addr];
-end */
-
- assign   read_data = mem[write_addr];
-
+assign read_data = mem[write_addr];
 
 endmodule
+
 

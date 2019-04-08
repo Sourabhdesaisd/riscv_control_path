@@ -24,8 +24,7 @@ module rv32i_core(
     wire id_ex_pipeline_en;
     wire invalid_inst;
     wire load_stall;
-    wire m_type_inst;
-
+   
     // IF/ID Connection
     wire [31:0] if_instruction, id_instruction;
     wire [31:0] if_pc, id_pc;
@@ -86,7 +85,7 @@ module rv32i_core(
         .pc_en(pc_en),
         .flush(if_id_pipeline_flush),
         .pc_jump_addr(ex_if_pc_jump_addr),
-        .jump_en(ex_if_jump_en),
+        .jump_en(ex_jump_en),
         .btb_target_pc(btb_target_pc),
         .btb_pc_valid(btb_pc_valid), // Replace this by 1'b0 to disconnect BTB
         .btb_pc_predictTaken(btb_pc_predictTaken), // Replace this by 1'b0 to disconnect BTB
@@ -102,7 +101,7 @@ module rv32i_core(
         .update_pc(ex_pc),
         .update(btb_update), // Replace this by 1'b0 to disconnect BTB otherwise keep btb_update
         .update_target(btb_update_target),
-        .mispredicted(ex_if_jump_en),
+        .mispredicted(ex_jump_en),
         .target_pc(btb_target_pc),
         .valid(btb_pc_valid),
         .predictedTaken(btb_pc_predictTaken)
@@ -158,7 +157,7 @@ module rv32i_core(
         .rst(rst),
         .pipeline_flush(id_ex_pipeline_flush),
         .pipeline_en(id_ex_pipeline_en),
-        .id_invalid_inst(!load_stall && invalid_inst && !ex_if_jump_en),
+        .id_invalid_inst(!load_stall && invalid_inst && !ex_jump_en),
         .id_instruction(id_instruction),
         .id_pc(id_pc),
         .id_op1(id_op1),
@@ -203,7 +202,7 @@ module rv32i_core(
     forwarding_unit forwarding_unit_inst (
         .rs1(ex_rs1),
         .rs2(ex_rs2),
-        .rd_mem(mem_wb_rd),
+        .rd_mem(alu_rd),
         .rd_wb(wb_rd),
         .reg_file_wr_mem(mem_wb_reg_file),
         .reg_file_wr_wb(wb_reg_file),
@@ -225,20 +224,16 @@ module rv32i_core(
         .predictedTaken(ex_pred_taken),
         .invalid_inst(invalid_inst),
         .ex_wb_reg_file(ex_wb_reg_file),
-    //    .m_unit_result(m_unit_result),
-    //    .m_unit_wr(m_unit_wr),
-    //    .m_unit_ready(m_unit_ready),
-    //    .m_unit_dest(m_unit_dest),
-        .alu_rd(ex_wb_rd),
+            .alu_rd(ex_wb_rd),
         .operand_a_forward_cntl(operand_a_cntl),
         .operand_b_forward_cntl(operand_b_cntl),
-        .data_forward_mem(mem_result),
+        .data_forward_mem(mem_mem_read ? mem_read_data : mem_result),
         .data_forward_wb(wb_result),
         .result_alu(ex_result),
         .op1_selected(op1_selected),
         .op2_selected(ex_op2_selected),
         .pc_jump_addr(ex_if_pc_jump_addr),
-        .jump_en(ex_if_jump_en),
+        .jump_en(ex_jump_en),
         .update_btb(btb_update),
         .calc_jump_addr(btb_update_target),
         .wb_rd(alu_rd),
@@ -252,7 +247,7 @@ module rv32i_core(
         .opcode(id_opcode),
         .ex_rd(ex_wb_rd),
         .ex_load_inst(ex_mem_read),
-        .jump_branch_taken(ex_if_jump_en),
+        .jump_branch_taken(ex_jump_en),
         .invalid_inst(invalid_inst),
      //   .stall(m_unit_busy || m_unit_ready),
         .if_id_pipeline_flush(if_id_pipeline_flush),
